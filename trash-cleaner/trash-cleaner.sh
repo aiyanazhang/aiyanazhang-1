@@ -23,6 +23,12 @@ source "$SRC_DIR/trash_scanner.sh"
 source "$SRC_DIR/cleanup_executor.sh"
 source "$SRC_DIR/logger.sh"
 source "$SRC_DIR/ui.sh"
+# 新增的预检查和列表管理模块
+source "$SRC_DIR/file_analyzer.sh"
+source "$SRC_DIR/risk_assessor.sh"
+source "$SRC_DIR/list_manager.sh"
+source "$SRC_DIR/interaction_manager.sh"
+source "$SRC_DIR/precheck_engine.sh"
 
 # 应用程序状态
 declare -A APP_STATE=(
@@ -183,6 +189,204 @@ perform_pre_checks() {
     
     log_info "APP" "预检查完成，找到 ${#accessible_paths[@]} 个可用回收站"
     return 0
+}
+
+# 执行预检查操作
+execute_precheck_operation() {
+    log_operation_start "PRECHECK_OPERATION" "开始执行预检查操作"
+    
+    local start_time
+    start_time=$(date +%s)
+    
+    # 显示操作开始信息
+    print_title "回收站预检查工具 v$VERSION" "box"
+    
+    # 执行系统检测
+    local os_type trash_paths
+    os_type=$(detect_os)
+    
+    print_status "info" "操作系统: $os_type"
+    print_status "info" "工作模式: 预检查模式"
+    
+    # 获取可访问的回收站路径
+    mapfile -t trash_paths < <(main_detect_system)
+    
+    if [[ ${#trash_paths[@]} -eq 0 ]]; then
+        print_status "error" "没有找到可访问的回收站目录"
+        log_operation_end "PRECHECK_OPERATION" "FAILED" "no_accessible_trash"
+        return 1
+    fi
+    
+    print_status "info" "找到 ${#trash_paths[@]} 个回收站目录"
+    
+    # 扫描回收站内容
+    print_status "info" "正在扫描回收站内容..."
+    
+    if ! scan_trash_directories "${trash_paths[@]}"; then
+        print_status "error" "扫描回收站失败"
+        log_operation_end "PRECHECK_OPERATION" "FAILED" "scan_failed"
+        return 1
+    fi
+    
+    # 检查是否有内容需要处理
+    local total_items=$((SCAN_STATS["total_files"] + SCAN_STATS["total_dirs"]))
+    
+    if [[ $total_items -eq 0 ]]; then
+        print_status "info" "回收站为空，无内容可分析"
+        log_operation_end "PRECHECK_OPERATION" "SUCCESS" "nothing_to_analyze"
+        return 0
+    fi
+    
+    # 获取清理类型和匹配的项目
+    local clean_type matching_items
+    clean_type=$(get_config "clean_type" "all")
+    mapfile -t matching_items < <(get_matching_items "$clean_type")
+    
+    if [[ ${#matching_items[@]} -eq 0 ]]; then
+        print_status "warning" "没有找到匹配条件的项目"
+        log_operation_end "PRECHECK_OPERATION" "SUCCESS" "no_matching_items"
+        return 0
+    fi
+    
+    print_status "info" "找到 ${#matching_items[@]} 个匹配项目"
+    
+    # 初始化预检查引擎
+    print_status "info" "初始化预检查引擎..."
+    init_precheck_engine
+    
+    # 执行完整预检查
+    print_status "info" "正在执行文件分析和风险评估..."
+    if ! run_full_precheck "${matching_items[@]}"; then
+        print_status "error" "预检查失败"
+        log_operation_end "PRECHECK_OPERATION" "FAILED" "precheck_failed"
+        return 1
+    fi
+    
+    # 处理不同的操作模式
+    if is_config_true "list_only"; then
+        # 仅列出模式
+        handle_list_only_mode
+    elif is_config_true "detailed_list"; then
+        # 详细列表模式
+        handle_detailed_list_mode
+    elif [[ -n "$(get_config "export_format")" ]]; then
+        # 导出模式
+        handle_export_mode
+    elif is_config_true "interactive_mode"; then
+        # 交互模式
+        handle_interactive_mode
+    else
+        # 默认显示概览
+        show_precheck_summary true
+    fi
+    
+    local end_time duration
+    end_time=$(date +%s)
+    duration=$((end_time - start_time))
+    
+    print_status "success" "预检查操作完成"
+    print_status "info" "处理时间: $(format_duration_human $duration)"
+    
+    log_performance "PRECHECK_DURATION" "$duration" "seconds"
+    log_operation_end "PRECHECK_OPERATION" "SUCCESS" "items_analyzed=${#matching_items[@]}"
+    
+    return 0
+}
+
+# 处理仅列出模式
+handle_list_only_mode() {
+    print_status "info" "仅列出模式：显示文件列表"
+    
+    # 显示概览
+    show_overview "$(get_config "color_output" "true")"
+    
+    # 应用排序
+    local sort_by sort_order
+    sort_by=$(get_config "sort_by" "name")
+    sort_order=$(get_config "sort_order" "asc")
+    sort_files "$sort_by" "$sort_order"
+    
+    # 显示简单列表
+    echo
+    echo "文件列表："
+    local count=0
+    for item in "${LIST_ITEMS[@]}"; do
+        ((count++))
+        printf "%4d) %s\n" "$count" "$(basename "$item")"
+    done
+}
+
+# 处理详细列表模式
+handle_detailed_list_mode() {
+    print_status "info" "详细列表模式：显示详细信息"
+    
+    # 显示预检查摘要
+    show_precheck_summary "$(get_config "color_output" "true")"
+    
+    # 应用排序
+    local sort_by sort_order
+    sort_by=$(get_config "sort_by" "risk")
+    sort_order="desc"  # 按风险降序
+    sort_files "$sort_by" "$sort_order"
+}
+
+# 处理导出模式
+handle_export_mode() {
+    local export_format export_file
+    export_format=$(get_config "export_format")
+    export_file=$(get_config "export_file")
+    
+    # 如果没有指定导出文件，生成默认文件名
+    if [[ -z "$export_file" ]]; then
+        local timestamp
+        timestamp=$(date "+%Y%m%d_%H%M%S")
+        export_file="trash_analysis_${timestamp}.${export_format}"
+    fi
+    
+    print_status "info" "导出模式：将结果导出到 $export_file"
+    
+    # 执行导出
+    if export_list "$export_file" "$export_format"; then
+        print_status "success" "导出成功: $export_file"
+    else
+        print_status "error" "导出失败"
+        return 1
+    fi
+    
+    # 同时显示概览
+    if ! is_config_true "no_header"; then
+        show_precheck_summary "$(get_config "color_output" "true")"
+    fi
+}
+
+# 处理交互模式
+handle_interactive_mode() {
+    print_status "info" "交互模式：启动交互式选择"
+    
+    # 启动交互式预检查
+    if start_interactive_precheck; then
+        # 获取用户选中的文件
+        local selected_files
+        mapfile -t selected_files < <(get_selected_files)
+        
+        if [[ ${#selected_files[@]} -gt 0 ]]; then
+            print_status "info" "用户选中了 ${#selected_files[@]} 个文件"
+            
+            # 如果不是仅预览模式，可以执行删除
+            if ! is_config_true "dry_run"; then
+                print_status "info" "即将执行删除操作..."
+                # 这里可以调用实际的删除功能
+                # batch_delete_items "${selected_files[@]}"
+                print_status "success" "模拟删除操作完成"
+            else
+                print_status "info" "预览模式，不执行实际删除"
+            fi
+        else
+            print_status "info" "用户未选择任何文件"
+        fi
+    else
+        print_status "info" "用户取消了交互操作"
+    fi
 }
 
 # 执行主要操作
@@ -393,7 +597,16 @@ main() {
         handle_error 1 "预检查失败"
     fi
     
-    # 5. 执行主要操作
+    # 5. 检查是否仅为列表模式或预检查模式
+    if is_config_true "list_only" || is_config_true "detailed_list" || [[ -n "$(get_config "export_format")" ]]; then
+        if ! execute_precheck_operation; then
+            handle_error 1 "预检查操作失败"
+        fi
+        APP_STATE["exit_code"]=0
+        return 0
+    fi
+    
+    # 6. 执行主要操作
     if ! execute_main_operation; then
         handle_error 1 "主要操作失败"
     fi
