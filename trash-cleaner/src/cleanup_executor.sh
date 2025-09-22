@@ -18,7 +18,7 @@ declare -A CLEANUP_STATS=(
     ["skipped_items"]=0
     ["total_size_freed"]=0
     ["start_time"]=0
-    ["end_time"]=0
+    ["end_time"]=200
 )
 
 # 失败项目列表
