@@ -1,0 +1,101 @@
+# 回收站清理工具配置文件
+# 文件位置: ~/.trash-cleaner.conf
+# 
+# 此文件采用简单的 key=value 格式
+# 以 # 开头的行为注释，空行将被忽略
+# 值可以用单引号或双引号包围，但不是必需的
+
+# ==================== 基本设置 ====================
+
+# 默认清理模式
+# 可选值: interactive (交互式), automatic (自动), preview (预览)
+default_mode=interactive
+
+# 删除前是否需要确认
+# 可选值: true, false, yes, no, 1, 0
+confirm_deletion=true
+
+# 启用详细输出
+# 可选值: true, false
+verbose=false
+
+# 预览模式（不实际删除文件）
+# 可选值: true, false
+dry_run=false
+
+# ==================== 清理规则 ====================
+
+# 清理类型
+# 可选值: files (仅文件), dirs (仅目录), all (所有)
+clean_type=all
+
+# 文件名匹配模式（支持通配符）
+# 示例: *.tmp, *.log, test*, *backup*
+pattern=*
+
+# 仅清理指定天数之前的文件（0表示无限制）
+max_file_age_days=0
+
+# 最小文件大小限制（MB，0表示无限制）
+min_file_size_mb=0
+
+# 目录遍历最大深度（0表示无限制）
+max_depth=20
+
+# ==================== 时间和大小过滤器 ====================
+
+# 时间过滤器示例（取消注释以启用）
+# older_than=30d    # 删除30天前的文件
+# older_than=1w     # 删除1周前的文件
+# older_than=6M     # 删除6个月前的文件
+
+# 大小过滤器示例（取消注释以启用）
+# size_limit=100M   # 仅删除大于100MB的文件
+# size_limit=1G     # 仅删除大于1GB的文件
+
+# ==================== 日志设置 ====================
+
+# 启用日志记录
+enable_logging=true
+
+# 日志文件路径
+log_file=~/.trash-cleaner.log
+
+# 日志保留天数
+log_retention_days=30
+
+# ==================== 用户界面设置 ====================
+
+# 启用彩色输出
+color_output=true
+
+# 显示进度条
+progress_bar=true
+
+# ==================== 高级设置 ====================
+
+# 配置文件路径（一般不需要修改）
+# config_file=~/.trash-cleaner.conf
+
+# ==================== 示例配置场景 ====================
+
+# 场景1: 保守清理 - 仅删除30天前的临时文件
+# older_than=30d
+# pattern=*.tmp
+# clean_type=files
+# confirm_deletion=true
+
+# 场景2: 积极清理 - 删除所有超过7天的内容
+# older_than=7d
+# clean_type=all
+# confirm_deletion=false
+
+# 场景3: 大文件清理 - 仅删除大于100MB的文件
+# size_limit=100M
+# clean_type=files
+# verbose=true
+
+# 场景4: 预览模式 - 查看将要删除什么但不实际删除
+# dry_run=true
+# verbose=true
+# clean_type=all
