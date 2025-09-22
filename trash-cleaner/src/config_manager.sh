@@ -20,6 +20,21 @@ declare -A DEFAULT_CONFIG=(
     ["max_depth"]="20"
     ["config_file"]="$HOME/.trash-cleaner.conf"
     ["log_file"]="$HOME/.trash-cleaner.log"
+    # 新增的预检查相关参数
+    ["list_only"]="false"
+    ["detailed_list"]="false"
+    ["risk_analysis"]="true"
+    ["group_by"]="type"
+    ["sort_by"]="name"
+    ["interactive_mode"]="true"
+    ["min_risk_level"]="0"
+    ["export_format"]=""
+    ["export_file"]=""
+    ["table_format"]="auto"
+    ["display_width"]="auto"
+    ["display_columns"]="name,size,time,risk,type"
+    ["no_header"]="false"
+    ["clear_screen"]="false"
 )
 
 # 全局配置存储
@@ -49,6 +64,22 @@ show_help() {
     --no-color              禁用彩色输出
     --no-progress           禁用进度条
 
+    # 新增的预检查和列表功能
+    -L, --list-only         仅列出文件，不执行删除
+    --detailed              显示详细文件信息
+    -r, --risk-analysis     启用风险分析
+    -g, --group-by GROUP    分组方式 (type|size|time|risk|location)
+    -S, --sort-by SORT      排序方式 (name|size|time|risk|importance)
+    -I, --interactive       交互式选择模式
+    -m, --min-risk LEVEL    最低风险等级 (0-100)
+    -x, --export FORMAT     导出列表到文件 (csv|json|txt)
+    --export-file FILE      导出文件路径
+    -T, --table-format FMT  表格格式 (simple|grid|fancy|auto)
+    -w, --width WIDTH       显示宽度限制
+    -C, --columns COLS      显示列 (name,size,time,risk,type)
+    -H, --no-header         不显示表头
+    --clear-screen          交互模式中清屏
+
 时间格式：
     s, sec, second          秒
     m, min, minute          分钟
@@ -69,12 +100,22 @@ show_help() {
     dirs                    仅清理目录
     all                     清理文件和目录 (默认)
 
+分组方式：
+    type                    按文件类型分组
+    size                    按文件大小分组
+    time                    按修改时间分组
+    risk                    按风险等级分组
+    location                按文件位置分组
+
 示例：
     $0                      交互式清理所有回收站内容
+    $0 -L -r                仅列出文件并显示风险分析
+    $0 --detailed -g type   显示详细信息并按类型分组
+    $0 -I -m 50             交互模式，仅显示风险评分>=50的文件
+    $0 -x json --export-file report.json  导出JSON格式报告
     $0 -y -t files          自动清理所有文件，跳过目录
     $0 -n -d 30d            预览30天前的文件
     $0 -s 100M -p "*.tmp"   清理大于100MB的.tmp文件
-    $0 --dry-run            仅显示将要清理的内容，不实际删除
 
 配置文件：
     配置文件使用简单的 key=value 格式，支持注释 (以 # 开头)
@@ -314,6 +355,103 @@ parse_command_line() {
                 ;;
             --no-progress)
                 CLI_ARGS["progress_bar"]="false"
+                shift
+                ;;
+            # 新增的预检查相关参数
+            -L|--list-only)
+                CLI_ARGS["list_only"]="true"
+                shift
+                ;;
+            --detailed)
+                CLI_ARGS["detailed_list"]="true"
+                shift
+                ;;
+            -r|--risk-analysis)
+                CLI_ARGS["risk_analysis"]="true"
+                shift
+                ;;
+            -g|--group-by)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["group_by"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --group-by 需要参数" >&2
+                    return 1
+                fi
+                ;;
+            -S|--sort-by)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["sort_by"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --sort-by 需要参数" >&2
+                    return 1
+                fi
+                ;;
+            -I|--interactive)
+                CLI_ARGS["interactive_mode"]="true"
+                shift
+                ;;
+            -m|--min-risk)
+                if [[ -n "$2" ]] && [[ "$2" =~ ^[0-9]+$ ]]; then
+                    CLI_ARGS["min_risk_level"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --min-risk 需要数字参数 (0-100)" >&2
+                    return 1
+                fi
+                ;;
+            -x|--export)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["export_format"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --export 需要参数 (csv|json|txt)" >&2
+                    return 1
+                fi
+                ;;
+            --export-file)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["export_file"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --export-file 需要参数" >&2
+                    return 1
+                fi
+                ;;
+            -T|--table-format)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["table_format"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --table-format 需要参数" >&2
+                    return 1
+                fi
+                ;;
+            -w|--width)
+                if [[ -n "$2" ]] && [[ "$2" =~ ^[0-9]+$ ]]; then
+                    CLI_ARGS["display_width"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --width 需要数字参数" >&2
+                    return 1
+                fi
+                ;;
+            -C|--columns)
+                if [[ -n "$2" ]]; then
+                    CLI_ARGS["display_columns"]="$2"
+                    shift 2
+                else
+                    echo "ERROR: --columns 需要参数" >&2
+                    return 1
+                fi
+                ;;
+            -H|--no-header)
+                CLI_ARGS["no_header"]="true"
+                shift
+                ;;
+            --clear-screen)
+                CLI_ARGS["clear_screen"]="true"
                 shift
                 ;;
             --)
