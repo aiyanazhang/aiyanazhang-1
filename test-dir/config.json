@@ -1,0 +1,13 @@
+{
+  "name": "测试配置",
+  "version": "1.0",
+  "settings": {
+    "theme": "dark",
+    "language": "zh-CN",
+    "features": [
+      "file-browser",
+      "content-preview",
+      "interactive-mode"
+    ]
+  }
+}
