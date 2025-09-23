@@ -1,0 +1,28 @@
+# 项目配置
+demo:
+  # 演示配置参数
+  max_threads: 10
+  demo_duration: 30
+  log_level: INFO
+  output_format: console
+  enable_monitoring: true
+
+# 线程池配置
+thread_pool:
+  core_pool_size: 5
+  max_pool_size: 20
+  keep_alive_time: 60
+  queue_capacity: 100
+
+# 监控配置
+monitoring:
+  enable_system_monitor: true
+  monitor_interval: 1.0
+  save_metrics: false
+  metrics_file: "metrics.json"
+
+# 日志配置
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: null  # null表示只输出到控制台
