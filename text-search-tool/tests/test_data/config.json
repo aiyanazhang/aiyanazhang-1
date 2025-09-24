@@ -1,0 +1,14 @@
+{
+    "project": "text-search-test",
+    "version": "1.0.0",
+    "main": "main.py",
+    "functions": [
+        "main",
+        "calculate",
+        "process_data"
+    ],
+    "todo_items": [
+        "TODO: Add error handling",
+        "TODO: Implement validation"
+    ]
+}
