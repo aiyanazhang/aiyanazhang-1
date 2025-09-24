@@ -1,0 +1,528 @@
+{
+  "commands": [
+    {
+      "name": "ls",
+      "categories": ["文件属性与权限", "基础文件操作"],
+      "description": "列出目录内容",
+      "syntax": "ls [选项] [文件...]",
+      "common_options": [
+        {
+          "option": "-l",
+          "description": "使用长格式列出信息"
+        },
+        {
+          "option": "-a",
+          "description": "不隐藏任何以.开头的项目"
+        },
+        {
+          "option": "-h",
+          "description": "与-l一起使用，以易读的格式列出文件大小"
+        },
+        {
+          "option": "-R",
+          "description": "递归列出子目录"
+        }
+      ],
+      "examples": [
+        "ls -la /home/user",
+        "ls -lh *.txt",
+        "ls -R /var/log"
+      ],
+      "related_commands": ["dir", "tree", "find"],
+      "safety_tips": "使用ls命令是安全的，不会修改任何文件"
+    },
+    {
+      "name": "cp",
+      "categories": ["基础文件操作", "文件复制"],
+      "description": "复制文件或目录",
+      "syntax": "cp [选项] 源文件 目标文件",
+      "common_options": [
+        {
+          "option": "-r",
+          "description": "递归复制目录"
+        },
+        {
+          "option": "-i",
+          "description": "覆盖前询问"
+        },
+        {
+          "option": "-p",
+          "description": "保留文件属性"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "cp file1.txt file2.txt",
+        "cp -r /home/user/docs /backup/",
+        "cp -i *.txt /tmp/"
+      ],
+      "related_commands": ["mv", "rsync", "scp"],
+      "safety_tips": "使用-i选项避免意外覆盖文件"
+    },
+    {
+      "name": "mv",
+      "categories": ["基础文件操作", "文件移动"],
+      "description": "移动/重命名文件或目录",
+      "syntax": "mv [选项] 源文件 目标文件",
+      "common_options": [
+        {
+          "option": "-i",
+          "description": "覆盖前询问"
+        },
+        {
+          "option": "-u",
+          "description": "只有源文件较新时才移动"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "mv oldname.txt newname.txt",
+        "mv /home/user/file.txt /tmp/",
+        "mv -i *.log /var/log/"
+      ],
+      "related_commands": ["cp", "rename"],
+      "safety_tips": "移动操作会改变文件位置，使用-i选项确认操作"
+    },
+    {
+      "name": "rm",
+      "categories": ["基础文件操作", "文件删除"],
+      "description": "删除文件或目录",
+      "syntax": "rm [选项] 文件...",
+      "common_options": [
+        {
+          "option": "-r",
+          "description": "递归删除目录"
+        },
+        {
+          "option": "-f",
+          "description": "强制删除，不询问"
+        },
+        {
+          "option": "-i",
+          "description": "删除前询问"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "rm file.txt",
+        "rm -rf /tmp/olddir",
+        "rm -i *.tmp"
+      ],
+      "related_commands": ["rmdir", "unlink"],
+      "safety_tips": "危险命令！使用rm -rf需要极其小心，建议先使用ls确认文件列表"
+    },
+    {
+      "name": "mkdir",
+      "categories": ["基础文件操作", "文件创建"],
+      "description": "创建目录",
+      "syntax": "mkdir [选项] 目录...",
+      "common_options": [
+        {
+          "option": "-p",
+          "description": "创建必需的父目录"
+        },
+        {
+          "option": "-m",
+          "description": "设置权限模式"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "mkdir newdir",
+        "mkdir -p /home/user/docs/projects",
+        "mkdir -m 755 publicdir"
+      ],
+      "related_commands": ["rmdir", "touch"],
+      "safety_tips": "安全命令，但要注意目录权限设置"
+    },
+    {
+      "name": "rmdir",
+      "categories": ["基础文件操作", "文件删除"],
+      "description": "删除空目录",
+      "syntax": "rmdir [选项] 目录...",
+      "common_options": [
+        {
+          "option": "-p",
+          "description": "删除指定目录及其祖先目录"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "rmdir emptydir",
+        "rmdir -p old/empty/dirs"
+      ],
+      "related_commands": ["rm", "mkdir"],
+      "safety_tips": "只能删除空目录，相对安全"
+    },
+    {
+      "name": "touch",
+      "categories": ["基础文件操作", "文件创建"],
+      "description": "创建空文件或更新文件时间戳",
+      "syntax": "touch [选项] 文件...",
+      "common_options": [
+        {
+          "option": "-a",
+          "description": "只更新访问时间"
+        },
+        {
+          "option": "-m",
+          "description": "只更新修改时间"
+        },
+        {
+          "option": "-t",
+          "description": "指定时间戳"
+        }
+      ],
+      "examples": [
+        "touch newfile.txt",
+        "touch -t 202301011200 file.txt",
+        "touch file1.txt file2.txt file3.txt"
+      ],
+      "related_commands": ["mkdir", "stat"],
+      "safety_tips": "安全命令，但可能意外创建文件"
+    },
+    {
+      "name": "cat",
+      "categories": ["文件查看与编辑", "内容查看"],
+      "description": "显示文件内容",
+      "syntax": "cat [选项] [文件...]",
+      "common_options": [
+        {
+          "option": "-n",
+          "description": "显示行号"
+        },
+        {
+          "option": "-A",
+          "description": "显示所有字符"
+        },
+        {
+          "option": "-b",
+          "description": "对非空行编号"
+        }
+      ],
+      "examples": [
+        "cat file.txt",
+        "cat -n /etc/passwd",
+        "cat file1.txt file2.txt > combined.txt"
+      ],
+      "related_commands": ["less", "more", "head", "tail"],
+      "safety_tips": "安全的只读命令"
+    },
+    {
+      "name": "less",
+      "categories": ["文件查看与编辑", "内容查看"],
+      "description": "分页显示文件内容",
+      "syntax": "less [选项] 文件...",
+      "common_options": [
+        {
+          "option": "-N",
+          "description": "显示行号"
+        },
+        {
+          "option": "-S",
+          "description": "不换行显示长行"
+        },
+        {
+          "option": "+F",
+          "description": "实时跟踪文件变化"
+        }
+      ],
+      "examples": [
+        "less /var/log/syslog",
+        "less -N file.txt",
+        "less +F /var/log/messages"
+      ],
+      "related_commands": ["more", "cat", "head", "tail"],
+      "safety_tips": "安全的查看命令，按q退出"
+    },
+    {
+      "name": "head",
+      "categories": ["文件查看与编辑", "内容查看"],
+      "description": "显示文件开头部分",
+      "syntax": "head [选项] [文件...]",
+      "common_options": [
+        {
+          "option": "-n",
+          "description": "指定显示行数"
+        },
+        {
+          "option": "-c",
+          "description": "指定显示字节数"
+        }
+      ],
+      "examples": [
+        "head -10 file.txt",
+        "head -c 100 file.txt",
+        "head -n 5 /etc/passwd"
+      ],
+      "related_commands": ["tail", "cat", "less"],
+      "safety_tips": "安全的只读命令"
+    },
+    {
+      "name": "tail",
+      "categories": ["文件查看与编辑", "内容查看"],
+      "description": "显示文件结尾部分",
+      "syntax": "tail [选项] [文件...]",
+      "common_options": [
+        {
+          "option": "-n",
+          "description": "指定显示行数"
+        },
+        {
+          "option": "-f",
+          "description": "实时跟踪文件变化"
+        },
+        {
+          "option": "-c",
+          "description": "指定显示字节数"
+        }
+      ],
+      "examples": [
+        "tail -10 file.txt",
+        "tail -f /var/log/syslog",
+        "tail -n 20 /var/log/messages"
+      ],
+      "related_commands": ["head", "cat", "less"],
+      "safety_tips": "安全的只读命令，tail -f可能持续运行需要Ctrl+C中断"
+    },
+    {
+      "name": "find",
+      "categories": ["文件查找与定位", "文件查找"],
+      "description": "在目录树中搜索文件",
+      "syntax": "find [路径...] [表达式]",
+      "common_options": [
+        {
+          "option": "-name",
+          "description": "按文件名搜索"
+        },
+        {
+          "option": "-type",
+          "description": "按文件类型搜索"
+        },
+        {
+          "option": "-size",
+          "description": "按文件大小搜索"
+        },
+        {
+          "option": "-exec",
+          "description": "对找到的文件执行命令"
+        }
+      ],
+      "examples": [
+        "find /home -name '*.txt'",
+        "find . -type f -size +1M",
+        "find /var/log -name '*.log' -exec ls -l {} \\;"
+      ],
+      "related_commands": ["locate", "grep", "which"],
+      "safety_tips": "使用-exec选项时要特别小心，确认命令的安全性"
+    },
+    {
+      "name": "grep",
+      "categories": ["文件查看与编辑", "内容处理"],
+      "description": "搜索文本模式",
+      "syntax": "grep [选项] 模式 [文件...]",
+      "common_options": [
+        {
+          "option": "-r",
+          "description": "递归搜索目录"
+        },
+        {
+          "option": "-i",
+          "description": "忽略大小写"
+        },
+        {
+          "option": "-n",
+          "description": "显示行号"
+        },
+        {
+          "option": "-v",
+          "description": "反向匹配"
+        }
+      ],
+      "examples": [
+        "grep 'error' /var/log/syslog",
+        "grep -r 'TODO' /home/user/project",
+        "grep -i 'warning' *.log"
+      ],
+      "related_commands": ["awk", "sed", "find"],
+      "safety_tips": "安全的只读命令"
+    },
+    {
+      "name": "chmod",
+      "categories": ["文件属性与权限", "权限管理"],
+      "description": "修改文件权限",
+      "syntax": "chmod [选项] 模式 文件...",
+      "common_options": [
+        {
+          "option": "-R",
+          "description": "递归修改目录权限"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "chmod 755 script.sh",
+        "chmod +x program",
+        "chmod -R 644 /home/user/docs"
+      ],
+      "related_commands": ["chown", "chgrp", "umask"],
+      "safety_tips": "修改权限可能影响系统安全，确认权限设置的合理性"
+    },
+    {
+      "name": "chown",
+      "categories": ["文件属性与权限", "权限管理"],
+      "description": "修改文件所有者",
+      "syntax": "chown [选项] 所有者[:组] 文件...",
+      "common_options": [
+        {
+          "option": "-R",
+          "description": "递归修改目录所有权"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "chown user file.txt",
+        "chown user:group file.txt",
+        "chown -R www-data:www-data /var/www"
+      ],
+      "related_commands": ["chmod", "chgrp"],
+      "safety_tips": "通常需要root权限，修改系统文件所有权时要特别谨慎"
+    },
+    {
+      "name": "tar",
+      "categories": ["压缩与归档", "归档工具"],
+      "description": "归档和压缩文件",
+      "syntax": "tar [选项] [归档文件] [文件...]",
+      "common_options": [
+        {
+          "option": "-c",
+          "description": "创建归档"
+        },
+        {
+          "option": "-x",
+          "description": "提取归档"
+        },
+        {
+          "option": "-f",
+          "description": "指定归档文件名"
+        },
+        {
+          "option": "-z",
+          "description": "使用gzip压缩"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "tar -czf backup.tar.gz /home/user",
+        "tar -xzf archive.tar.gz",
+        "tar -tf archive.tar"
+      ],
+      "related_commands": ["gzip", "zip", "unzip"],
+      "safety_tips": "提取归档时注意目标目录，避免覆盖重要文件"
+    },
+    {
+      "name": "zip",
+      "categories": ["压缩与归档", "归档工具"],
+      "description": "创建zip压缩文件",
+      "syntax": "zip [选项] 压缩文件 文件...",
+      "common_options": [
+        {
+          "option": "-r",
+          "description": "递归压缩目录"
+        },
+        {
+          "option": "-q",
+          "description": "静默模式"
+        },
+        {
+          "option": "-9",
+          "description": "最高压缩级别"
+        }
+      ],
+      "examples": [
+        "zip archive.zip file1 file2",
+        "zip -r backup.zip /home/user",
+        "zip -9 compressed.zip largefile.txt"
+      ],
+      "related_commands": ["unzip", "tar", "gzip"],
+      "safety_tips": "压缩操作相对安全，注意磁盘空间"
+    },
+    {
+      "name": "unzip",
+      "categories": ["压缩与归档", "归档工具"],
+      "description": "提取zip压缩文件",
+      "syntax": "unzip [选项] 压缩文件 [文件...]",
+      "common_options": [
+        {
+          "option": "-l",
+          "description": "列出压缩包内容"
+        },
+        {
+          "option": "-o",
+          "description": "覆盖文件不询问"
+        },
+        {
+          "option": "-d",
+          "description": "指定提取目录"
+        }
+      ],
+      "examples": [
+        "unzip archive.zip",
+        "unzip -l archive.zip",
+        "unzip archive.zip -d /tmp"
+      ],
+      "related_commands": ["zip", "tar"],
+      "safety_tips": "提取前使用-l选项查看内容，避免意外覆盖文件"
+    },
+    {
+      "name": "ln",
+      "categories": ["文件属性与权限", "链接管理"],
+      "description": "创建文件链接",
+      "syntax": "ln [选项] 目标 链接名",
+      "common_options": [
+        {
+          "option": "-s",
+          "description": "创建符号链接"
+        },
+        {
+          "option": "-f",
+          "description": "强制创建"
+        },
+        {
+          "option": "-v",
+          "description": "显示详细信息"
+        }
+      ],
+      "examples": [
+        "ln -s /usr/bin/python3 /usr/local/bin/python",
+        "ln file.txt hardlink.txt",
+        "ln -s /home/user/docs ~/documents"
+      ],
+      "related_commands": ["readlink", "unlink"],
+      "safety_tips": "符号链接相对安全，硬链接要注意不要创建循环引用"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "categories": {
+    "基础文件操作": {
+      "description": "基本的文件和目录操作命令",
+      "subcategories": {
+        "文件创建": ["touch", "mkdir", "mkfifo"],
+        "文件删除": ["rm", "rmdir", "unlink"],
+        "文件复制": ["cp", "rsync"],
+        "文件移动": ["mv", "rename"]
+      }
+    },
+    "文件查看与编辑": {
+      "description": "查看和编辑文件内容的命令",
+      "subcategories": {
+        "内容查看": ["cat", "less", "more", "head", "tail"],
+        "文件编辑": ["vim", "nano", "emacs", "sed"],
+        "内容处理": ["grep", "awk", "sort", "uniq"]
+      }
+    },
+    "文件属性与权限": {
+      "description": "管理文件属性和权限的命令",
+      "subcategories": {
+        "权限管理": ["chmod", "chown", "chgrp"],
+        "属性查看": ["ls", "stat", "file"],
+        "链接管理": ["ln", "readlink"]
+      }
+    },
+    "文件查找与定位": {
+      "description": "查找文件和定位命令的工具",
+      "subcategories": {
+        "文件查找": ["find", "locate", "which", "whereis"],
+        "目录操作": ["cd", "pwd", "pushd", "popd"]
+      }
+    },
+    "压缩与归档": {
+      "description": "文件压缩和归档管理命令",
+      "subcategories": {
+        "压缩工具": ["gzip", "gunzip", "bzip2", "xz"],
+        "归档工具": ["tar", "zip", "unzip"]
+      }
+    }
+  },
+  "difficulty_levels": {
+    "初级": ["ls", "cat", "cp", "mv", "rm", "mkdir", "touch"],
+    "中级": ["find", "grep", "chmod", "chown", "tar", "head", "tail"],
+    "高级": ["awk", "sed", "rsync", "xargs", "find -exec"]
+  },
+  "usage_frequency": {
+    "高频": ["ls", "cd", "cp", "mv", "rm", "cat", "grep"],
+    "中频": ["find", "chmod", "tar", "head", "tail", "touch", "mkdir"],
+    "低频": ["chown", "ln", "stat", "file", "which", "whereis"]
+  }
+}

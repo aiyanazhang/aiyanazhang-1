@@ -1,0 +1,41 @@
+{
+  "system_dirs": [
+    "/bin", "/usr", "/etc", "/var", "/lib", "/lib64", 
+    "/boot", "/dev", "/proc", "/sys", "/run"
+  ],
+  "config_files": [
+    ".bashrc", ".profile", ".gitconfig", ".vimrc", 
+    ".ssh/config", ".ssh/authorized_keys", ".zshrc"
+  ],
+  "important_extensions": [
+    ".sql", ".json", ".yaml", ".yml", ".md", ".conf", 
+    ".config", ".ini", ".cfg", ".py", ".sh"
+  ],
+  "project_files": [
+    "package.json", "package-lock.json", "Makefile", 
+    "requirements.txt", "Dockerfile", "docker-compose.yml",
+    "pom.xml", "build.gradle", ".gitignore", "README.md"
+  ],
+  "user_rules": [
+    {
+      "pattern": "*.bak",
+      "action": "warn",
+      "message": "备份文件删除需要额外确认"
+    },
+    {
+      "pattern": "*.log",
+      "action": "safe",
+      "message": "日志文件通常可以安全删除"
+    },
+    {
+      "pattern": "*.tmp",
+      "action": "safe", 
+      "message": "临时文件通常可以安全删除"
+    },
+    {
+      "pattern": "*.cache",
+      "action": "safe",
+      "message": "缓存文件通常可以安全删除"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Environment Check Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .info-table th, .info-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .info-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            width: 200px;
+        }
+        .info-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .installation-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #fafafa;
+        }
+        .installation-card.active {
+            border-color: #27ae60;
+            background-color: #e8f8f0;
+        }
+        .installation-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        .active-badge {
+            background-color: #27ae60;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .diagnostic-item {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .diagnostic-error {
+            background-color: #fdf2f2;
+            border-left-color: #e74c3c;
+        }
+        .diagnostic-warn {
+            background-color: #fefbf3;
+            border-left-color: #f39c12;
+        }
+        .diagnostic-info {
+            background-color: #f0f8ff;
+            border-left-color: #3498db;
+        }
+        .diagnostic-level {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .error { color: #e74c3c; }
+        .warn { color: #f39c12; }
+        .info { color: #3498db; }
+        .code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .suggestion {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 3px;
+        }
+        .timestamp {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Java Environment Check Report</h1>
+        <div class="timestamp">
+            Generated at: Tue Sep 23 15:19:31 CST 2025 | Duration: 701ms
+        </div>
+        <h2>System Information</h2>
+        <table class="info-table">
+            <tr><th>Operating System</th><td>Mac OS X</td></tr>
+            <tr><th>OS Version</th><td>15.3.1</td></tr>
+            <tr><th>Architecture</th><td>aarch64</td></tr>
+            <tr><th>User Name</th><td>zay</td></tr>
+            <tr><th>User Home</th><td>/Users/zay</td></tr>
+            <tr><th>Working Directory</th><td>/Users/zay/aiyanazhang-1/java-environment-checker</td></tr>
+            <tr><th>Temp Directory</th><td>/var/folders/b4/m1_nsx4s54b18jlmnghhf5940000gp/T/</td></tr>
+            <tr><th>File Encoding</th><td>UTF-8</td></tr>
+            <tr><th>System Encoding</th><td>UTF-8</td></tr>
+        </table>
+        <h2>Java Environment</h2>
+        <table class="info-table">
+            <tr><th>Java Version</th><td>17.0.2</td></tr>
+            <tr><th>Specification Version</th><td>17</td></tr>
+            <tr><th>Vendor</th><td>Oracle Corporation</td></tr>
+            <tr><th>Java Home</th><td>/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home</td></tr>
+            <tr><th>VM Name</th><td>OpenJDK 64-Bit Server VM</td></tr>
+            <tr><th>VM Version</th><td>17.0.2+8-86</td></tr>
+            <tr><th>VM Vendor</th><td>Oracle Corporation</td></tr>
+            <tr><th>Runtime Name</th><td>OpenJDK Runtime Environment</td></tr>
+            <tr><th>Runtime Version</th><td>17.0.2+8-86</td></tr>
+            <tr><th>Class Path</th><td>&lt;span class=&quot;code&quot;&gt;target/java-env-checker.jar&lt;/span&gt;</td></tr>
+            <tr><th>Library Path</th><td>&lt;span class=&quot;code&quot;&gt;/Users/zay/Library/Java/Extensions&lt;br/&gt;:/Library/Java/Extensions&lt;br/&gt;:/Network/Library/Java/Extensions&lt;br/&gt;:/System/Library/Java/Extensions&lt;br/&gt;:/usr/lib/java&lt;br/&gt;:.&lt;/span&gt;</td></tr>
+        </table>
+        <h2>Environment Variables</h2>
+        <table class="info-table">
+            <tr><th>JAVA_HOME</th><td>/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home</td></tr>
+            <tr><th>JRE_HOME</th><td>[Not Set]</td></tr>
+            <tr><th>JAVA_OPTS</th><td>[Not Set]</td></tr>
+            <tr><th>CLASSPATH</th><td>[Not Set]</td></tr>
+            <tr><th>PATH</th><td>&lt;span class=&quot;code&quot;&gt;/Users/zay/.npm-global/bin&lt;br/&gt;:/Users/zay/.npm-global/bin&lt;br/&gt;:/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5/bin&lt;br/&gt;:/Users/zay/opt/apache-maven-3.9.6/bin&lt;br/&gt;:/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home/bin&lt;br/&gt;:/Users/zay/opt/apache-maven/bin&lt;br/&gt;:/Users/zay/.nvm/versions/node/v23.11.0/bin&lt;br/&gt;:/Library/Frameworks/Python.framework/Versions/3.9/bin&lt;br/&gt;:/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Home/bin&lt;br/&gt;:/usr/local/ApacheMaven/bin&lt;br/&gt;:/opt/homebrew/bin&lt;br/&gt;:/opt/homebrew/sbin&lt;br/&gt;:/Library/Frameworks/Python.framework/Versions/3.9/bin&lt;br/&gt;:/Library/Frameworks/Python.framework/Versions/3.10/bin&lt;br/&gt;:/usr/local/bin&lt;br/&gt;:/System/Cryptexes/App/usr/bin&lt;br/&gt;:/usr/bin&lt;br/&gt;:/bin&lt;br/&gt;:/usr/sbin&lt;br/&gt;:/sbin&lt;br/&gt;:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin&lt;br/&gt;:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin&lt;br/&gt;:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin&lt;br/&gt;:/Library/Apple/usr/bin&lt;br/&gt;:/Users/zay/.npm-global/bin&lt;br/&gt;:/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5/bin&lt;br/&gt;:/Users/zay/opt/apache-maven-3.9.6/bin&lt;br/&gt;:/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home/bin&lt;br/&gt;:/Users/zay/opt/apache-maven/bin&lt;br/&gt;:/Users/zay/.nvm/versions/node/v23.11.0/bin&lt;br/&gt;:/Users/zay/.local/bin&lt;br/&gt;:/Users/zay/.sdkman/candidates/java/current/bin&lt;br/&gt;:/Users/zay/.sdkman/candidates/gradle/current/bin&lt;br/&gt;:/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Home/bin&lt;br/&gt;:/usr/local/ApacheMaven/bin&lt;br/&gt;:/Users/zay/Library/Application Support/JetBrains/Toolbox/scripts&lt;br/&gt;:/Users/zay/.orbstack/bin&lt;br/&gt;:/usr/local/maven/apache-maven-3.9.6/bin&lt;br/&gt;:/Users/zay/.orbstack/bin&lt;br/&gt;:/usr/local/maven/apache-maven-3.9.6/bin&lt;/span&gt;</td></tr>
+            <tr><th>MAVEN_HOME</th><td>[Not Set]</td></tr>
+            <tr><th>M2_HOME</th><td>/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5</td></tr>
+            <tr><th>GRADLE_HOME</th><td>/Users/zay/.sdkman/candidates/gradle/current</td></tr>
+            <tr><th>ANT_HOME</th><td>[Not Set]</td></tr>
+        </table>
+        <h2>Java Installations</h2>
+        <div class="installation-card active">
+            <div class="installation-title">
+                JDK 17.0.2 - Oracle Corporation                <span class="active-badge">ACTIVE</span>
+            </div>
+            <div><strong>Path:</strong> <span class="code">/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home</span></div>
+            <div><strong>Architecture:</strong> aarch64</div>
+        </div>
+        <div class="installation-card">
+            <div class="installation-title">
+                JDK 1.8.0_341 - Unknown            </div>
+            <div><strong>Path:</strong> <span class="code">/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Home</span></div>
+            <div><strong>Architecture:</strong> x86_64</div>
+        </div>
+        <h2>Diagnostic Results</h2>
+        <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+            <strong>Summary:</strong>             <span class="error">0 Error(s)</span>,             <span class="warn">0 Warning(s)</span>,             <span class="info">2 Info</span>
+        </div>
+        <div class="diagnostic-item diagnostic-info">
+            <div class="diagnostic-level info">INFO</div>
+            <div><strong>Using Java 17 (LTS version)</strong></div>
+            <div class="suggestion">
+                <strong>Suggestion:</strong> You are using a Long Term Support version - excellent choice!
+            </div>
+        </div>
+        <div class="diagnostic-item diagnostic-info">
+            <div class="diagnostic-level info">INFO</div>
+            <div><strong>Multiple Java installations found (2 installations)</strong></div>
+            <div class="suggestion">
+                <strong>Suggestion:</strong> Use JAVA_HOME to specify which installation to use
+            </div>
+        </div>
+    </div>
+</body>
+</html>

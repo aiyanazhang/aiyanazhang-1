@@ -1,0 +1,113 @@
+# 应用程序基础配置文件
+# 包含所有环境的通用默认配置
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  error:
+    include-stacktrace: never
+    include-message: never
+
+# Spring配置
+spring:
+  application:
+    name: java-config-management
+  
+  # 数据库配置（默认使用H2内存数据库）
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+    
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    
+  # H2控制台配置
+  h2:
+    console:
+      enabled: false
+      
+  # JSON配置
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+      
+  # 缓存配置
+  cache:
+    type: simple
+    
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.company: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 安全配置
+security:
+  jwt:
+    expiration: 86400  # 24小时，单位：秒
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+  rate-limit:
+    requests-per-minute: 100
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,configprops
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    export:
+      simple:
+        enabled: true
+
+# 应用信息
+info:
+  app:
+    name: Java Configuration Management
+    description: A comprehensive Java application configuration management system
+    version: 1.0.0
+    
+# 自定义配置
+app:
+  config:
+    cache:
+      ttl: 300  # 缓存TTL，单位：秒
+      max-size: 1000
+    monitoring:
+      enabled: true
+      interval: 60  # 监控间隔，单位：秒
+    audit:
+      enabled: true
+      retention-days: 30
+    hotreload:
+      enabled: false  # 默认关闭热更新
+      check-interval: 30  # 检查间隔，单位：秒
