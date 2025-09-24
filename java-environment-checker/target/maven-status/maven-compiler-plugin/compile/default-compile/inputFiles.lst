@@ -1,0 +1,16 @@
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/DiagnosticResult.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/formatter/HtmlOutputFormatter.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/diagnostic/EnvironmentDiagnostic.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/formatter/JsonOutputFormatter.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/EnvironmentVariableInfo.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/checker/PathConfigurationChecker.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/analyzer/EnvironmentVariableAnalyzer.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/EnvironmentReport.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/JavaEnvironmentChecker.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/scanner/JdkJreScanner.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/collector/SystemInfoCollector.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/formatter/ConsoleOutputFormatter.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/detector/JavaVersionDetector.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/JavaEnvironmentInfo.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/JavaInstallationInfo.java
+/Users/zay/aiyanazhang-1/java-environment-checker/src/main/java/com/company/envchecker/model/SystemInfo.java

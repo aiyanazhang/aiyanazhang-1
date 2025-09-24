@@ -1,0 +1,35 @@
+{
+  "systemInfo": {
+    "operatingSystem": "Mac OS X",
+    "osVersion": "15.3.1",
+    "architecture": "aarch64",
+    "userName": "zay",
+    "userHome": "/Users/zay",
+    "workingDirectory": "/Users/zay/aiyanazhang-1/java-environment-checker",
+    "tempDirectory": "/var/folders/b4/m1_nsx4s54b18jlmnghhf5940000gp/T/",
+    "fileEncoding": "UTF-8",
+    "systemEncoding": "UTF-8"
+  },
+  "javaEnvironmentInfo": {
+    "javaVersion": "17.0.2",
+    "javaSpecVersion": "17",
+    "javaVendor": "Oracle Corporation",
+    "javaHome": "/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.2+8-86",
+    "vmVendor": "Oracle Corporation",
+    "runtimeName": "OpenJDK Runtime Environment",
+    "runtimeVersion": "17.0.2+8-86",
+    "classPath": "target/java-env-checker.jar",
+    "libraryPath": "/Users/zay/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.",
+    "bootClassPath": ""
+  },
+  "environmentVariableInfo": {
+    "javaHome": "/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home",
+    "pathVariable": "/Users/zay/.npm-global/bin:/Users/zay/.npm-global/bin:/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5/bin:/Users/zay/opt/apache-maven-3.9.6/bin:/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home/bin:/Users/zay/opt/apache-maven/bin:/Users/zay/.nvm/versions/node/v23.11.0/bin:/Library/Frameworks/Python.framework/Versions/3.9/bin:/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Home/bin:/usr/local/ApacheMaven/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.9/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Users/zay/.npm-global/bin:/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5/bin:/Users/zay/opt/apache-maven-3.9.6/bin:/Users/zay/opt/jdk/jdk-17.0.2.jdk/Contents/Home/bin:/Users/zay/opt/apache-maven/bin:/Users/zay/.nvm/versions/node/v23.11.0/bin:/Users/zay/.local/bin:/Users/zay/.sdkman/candidates/java/current/bin:/Users/zay/.sdkman/candidates/gradle/current/bin:/Library/Java/JavaVirtualMachines/jdk1.8.0_341.jdk/Contents/Home/bin:/usr/local/ApacheMaven/bin:/Users/zay/Library/Application Support/JetBrains/Toolbox/scripts:/Users/zay/.orbstack/bin:/usr/local/maven/apache-maven-3.9.6/bin:/Users/zay/.orbstack/bin:/usr/local/maven/apache-maven-3.9.6/bin",
+    "gradleHome": "/Users/zay/.sdkman/candidates/gradle/current",
+    "m2Home": "/Users/zay/javacode/lingmaTestCode/maven/426/apache-maven-3.9.5"
+  },
+  "checkTimestamp": 1758611960947,
+  "checkDuration": "4ms"
+}
