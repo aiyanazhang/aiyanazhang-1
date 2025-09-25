@@ -1,0 +1,511 @@
+/* ===== 响应式设计样式 ===== */
+
+/* ===== 移动端优先设计基础 ===== */
+/* 默认样式已经适配移动端，以下为渐进增强 */
+
+/* ===== 小屏手机 (< 576px) ===== */
+@media (max-width: 575.98px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    /* 头部调整 */
+    .header {
+        padding: var(--spacing-md) 0;
+    }
+
+    .header .container {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+    }
+
+    .app-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .app-title i {
+        font-size: var(--font-size-2xl);
+    }
+
+    .header-actions {
+        justify-content: center;
+        gap: var(--spacing-md);
+    }
+
+    .current-time {
+        font-size: var(--font-size-xs);
+    }
+
+    .refresh-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+
+    /* 主要内容调整 */
+    .main-content {
+        padding: var(--spacing-lg) 0;
+    }
+
+    /* 当前天气调整 */
+    .current-weather {
+        padding: var(--spacing-lg);
+    }
+
+    .weather-main {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .weather-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .current-temp {
+        font-size: 3rem;
+    }
+
+    .temp-unit {
+        font-size: 1.5rem;
+    }
+
+    /* 详细信息调整 */
+    .weather-details {
+        padding: var(--spacing-lg);
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .detail-item {
+        padding: var(--spacing-sm);
+    }
+
+    .detail-icon {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-base);
+    }
+
+    .detail-value {
+        font-size: var(--font-size-base);
+    }
+
+    /* 加载和错误状态调整 */
+    .loading-container,
+    .error-container {
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+
+    .loading-spinner,
+    .error-icon {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+/* ===== 大屏手机 (576px - 767.98px) ===== */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .container {
+        max-width: 540px;
+    }
+
+    /* 头部优化 */
+    .header .container {
+        align-items: center;
+    }
+
+    .app-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* 天气主信息优化 */
+    .weather-main {
+        gap: var(--spacing-xl);
+    }
+
+    .weather-icon {
+        width: 90px;
+        height: 90px;
+    }
+
+    .current-temp {
+        font-size: 3.5rem;
+    }
+
+    /* 详细信息优化 */
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+    }
+
+    .detail-item {
+        padding: var(--spacing-md);
+    }
+}
+
+/* ===== 平板设备 (768px - 991.98px) ===== */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .container {
+        max-width: 720px;
+    }
+
+    /* 头部布局 */
+    .header {
+        padding: var(--spacing-xl) 0;
+    }
+
+    .app-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .header-actions {
+        gap: var(--spacing-xl);
+    }
+
+    /* 主要内容布局 */
+    .main-content {
+        padding: var(--spacing-2xl) 0;
+    }
+
+    /* 天气显示区域布局优化 */
+    .weather-display {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    /* 当前天气区域 */
+    .current-weather {
+        padding: var(--spacing-2xl);
+    }
+
+    .weather-main {
+        justify-content: space-around;
+        gap: var(--spacing-2xl);
+    }
+
+    .weather-icon {
+        width: 120px;
+        height: 120px;
+    }
+
+    .current-temp {
+        font-size: 4.5rem;
+    }
+
+    .temp-unit {
+        font-size: 2.5rem;
+    }
+
+    /* 详细信息区域 */
+    .weather-details {
+        padding: var(--spacing-2xl);
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xl);
+    }
+
+    .detail-item {
+        padding: var(--spacing-lg);
+    }
+
+    .detail-icon {
+        width: 48px;
+        height: 48px;
+        font-size: var(--font-size-xl);
+    }
+
+    .detail-value {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* ===== 小桌面 (992px - 1199.98px) ===== */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .container {
+        max-width: 960px;
+    }
+
+    /* 头部完整布局 */
+    .header {
+        padding: var(--spacing-xl) 0;
+    }
+
+    .app-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    /* 天气显示区域网格布局 */
+    .weather-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: var(--spacing-xl);
+        grid-template-areas: 
+            "location location"
+            "current details";
+    }
+
+    .location-info {
+        grid-area: location;
+    }
+
+    .current-weather {
+        grid-area: current;
+    }
+
+    .weather-details {
+        grid-area: details;
+    }
+
+    /* 当前天气区域调整 */
+    .weather-main {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+    }
+
+    .weather-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .current-temp {
+        font-size: 3.5rem;
+    }
+
+    /* 详细信息调整 */
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .detail-item {
+        padding: var(--spacing-md);
+    }
+}
+
+/* ===== 大桌面 (≥ 1200px) ===== */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+
+    /* 完整桌面布局 */
+    .weather-display {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto auto;
+        gap: var(--spacing-2xl);
+        grid-template-areas: 
+            "location location"
+            "current details";
+    }
+
+    .location-info {
+        grid-area: location;
+        padding: var(--spacing-2xl);
+    }
+
+    .current-weather {
+        grid-area: current;
+        padding: var(--spacing-2xl);
+    }
+
+    .weather-details {
+        grid-area: details;
+        padding: var(--spacing-2xl);
+    }
+
+    /* 当前天气完整展示 */
+    .weather-main {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: var(--spacing-2xl);
+    }
+
+    .weather-icon {
+        width: 140px;
+        height: 140px;
+    }
+
+    .current-temp {
+        font-size: 5rem;
+    }
+
+    .temp-unit {
+        font-size: 3rem;
+    }
+
+    /* 详细信息完整展示 */
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .detail-item {
+        padding: var(--spacing-lg);
+    }
+
+    .detail-icon {
+        width: 52px;
+        height: 52px;
+        font-size: var(--font-size-2xl);
+    }
+
+    .detail-value {
+        font-size: var(--font-size-xl);
+    }
+
+    /* 悬停效果增强 */
+    .detail-item:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .refresh-btn:hover {
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+/* ===== 超大屏幕 (≥ 1400px) ===== */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+
+    /* 超大屏幕特殊布局 */
+    .weather-display {
+        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-areas: 
+            "location location location"
+            ". current details";
+    }
+
+    .current-weather {
+        padding: var(--spacing-2xl) var(--spacing-xl);
+    }
+
+    .weather-details {
+        padding: var(--spacing-2xl) var(--spacing-xl);
+    }
+}
+
+/* ===== 横屏适配 ===== */
+@media (orientation: landscape) and (max-height: 600px) {
+    .header {
+        padding: var(--spacing-md) 0;
+    }
+
+    .main-content {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .current-weather,
+    .weather-details,
+    .location-info {
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .weather-main {
+        flex-direction: row;
+        gap: var(--spacing-lg);
+    }
+
+    .weather-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+    .current-temp {
+        font-size: 2.5rem;
+    }
+
+    .temp-unit {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+    .header,
+    .footer,
+    .refresh-btn,
+    .retry-btn {
+        display: none;
+    }
+
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+
+    .weather-display {
+        display: block;
+    }
+
+    .current-weather,
+    .weather-details,
+    .location-info {
+        background: white;
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        margin-bottom: 1cm;
+    }
+
+    .weather-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .current-temp {
+        font-size: 24pt;
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== 高密度显示屏优化 ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .weather-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ===== 触摸设备优化 ===== */
+@media (hover: none) and (pointer: coarse) {
+    .refresh-btn,
+    .retry-btn,
+    .detail-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .detail-item:hover {
+        transform: none;
+        background: rgba(33, 150, 243, 0.1);
+    }
+
+    .refresh-btn:hover,
+    .retry-btn:hover {
+        transform: none;
+    }
+
+    /* 触摸反馈 */
+    .refresh-btn:active,
+    .retry-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease-in-out;
+    }
+}
