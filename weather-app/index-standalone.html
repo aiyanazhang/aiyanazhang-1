@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>天气应用</title>
+  
+  <!-- React CDN -->
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  
+  <!-- Babel Standalone for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+  <!-- Styled Components -->
+  <script src="https://unpkg.com/styled-components@5.3.6/dist/styled-components.min.js"></script>
+  
+  <style>
+    :root {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      
+      /* CSS变量定义 */
+      --primary-color: #74b9ff;
+      --primary-dark: #0984e3;
+      --secondary-color: #636e72;
+      --background-gradient: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      --card-background: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(255, 255, 255, 0.2);
+      --text-primary: #2d3436;
+      --text-secondary: #636e72;
+      --text-light: rgba(255, 255, 255, 0.87);
+      --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --shadow-heavy: 0 12px 40px rgba(0, 0, 0, 0.15);
+      --border-radius: 16px;
+      --border-radius-small: 8px;
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background-gradient);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    #root {
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* 滚动条样式 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      transition: background var(--transition-fast);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* 响应式字体大小 */
+    @media (max-width: 768px) {
+      :root {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        font-size: 13px;
+      }
+    }
+
+    /* 焦点样式 */
+    *:focus {
+      outline: none;
+    }
+
+    *:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    /* 选择文本样式 */
+    ::selection {
+      background: rgba(116, 185, 255, 0.3);
+      color: var(--text-primary);
+    }
+
+    /* 动画关键帧 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    /* 通用动画类 */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .slide-in {
+      animation: slideIn 0.4s ease-out;
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* 无障碍设计 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+    const styled = window.styled;
+
+    // 模拟天气数据
+    const mockWeatherData = {
+      '北京': { temperature: 15, humidity: 45, location: '北京' },
+      '上海': { temperature: 22, humidity: 65, location: '上海' },
+      '广州': { temperature: 28, humidity: 75, location: '广州' },
+      '深圳': { temperature: 26, humidity: 70, location: '深圳' },
+      '杭州': { temperature: 20, humidity: 60, location: '杭州' },
+      '南京': { temperature: 18, humidity: 55, location: '南京' },
+      '成都': { temperature: 16, humidity: 80, location: '成都' },
+      '重庆': { temperature: 19, humidity: 75, location: '重庆' },
+      '武汉': { temperature: 17, humidity: 65, location: '武汉' },
+      '西安': { temperature: 14, humidity: 50, location: '西安' },
+      '天津': { temperature: 13, humidity: 48, location: '天津' },
+      '青岛': { temperature: 16, humidity: 62, location: '青岛' },
+      '大连': { temperature: 12, humidity: 58, location: '大连' },
+      '厦门': { temperature: 24, humidity: 72, location: '厦门' },
+      '苏州': { temperature: 21, humidity: 58, location: '苏州' }
+    };
+
+    // 天气服务
+    const getCurrentWeather = async (location) => {
+      // 模拟网络延迟
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
+      
+      let weatherData;
+      
+      // 检查是否为预定义城市
+      if (mockWeatherData[location]) {
+        weatherData = { ...mockWeatherData[location] };
+      } else {
+        // 生成随机数据
+        const baseTemp = Math.random() * 40 - 10; // -10°C 到 30°C
+        const baseHumidity = Math.random() * 60 + 20; // 20% 到 80%
+        
+        weatherData = {
+          temperature: Math.round(baseTemp * 10) / 10,
+          humidity: Math.round(baseHumidity),
+          location: location
+        };
+      }
+      
+      // 随机模拟一些错误情况（5%概率）
+      if (Math.random() < 0.05) {
+        throw new Error('服务器暂时无法获取该城市的天气信息');
+      }
+      
+      return weatherData;
+    };
+
+    // 样式组件
+    const AppContainer = styled.div`
+      min-height: 100vh;
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    `;
+
+    const Title = styled.h1`
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      
+      @media (max-width: 768px) {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
+    `;
+
+    const SelectorContainer = styled.div`
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      
+      @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 1.5rem;
+      }
+    `;
+
+    const LocationSelect = styled.select`
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      color: #2d3436;
+      cursor: pointer;
+      outline: none;
+      min-width: 150px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      
+      &:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      &:focus {
+        border-color: #74b9ff;
+        box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.2);
+      }
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        max-width: 250px;
+      }
+    `;
+
+    const CustomInput = styled.input`
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      color: #2d3436;
+      outline: none;
+      min-width: 150px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      
+      &::placeholder {
+        color: #636e72;
+      }
+      
+      &:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      &:focus {
+        border-color: #74b9ff;
+        box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.2);
+      }
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        max-width: 250px;
+      }
+    `;
+
+    const SearchButton = styled.button`
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(116, 185, 255, 0.3);
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        max-width: 250px;
+      }
+    `;
+
+    const SpinnerContainer = styled.div`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    `;
+
+    const Spinner = styled.div`
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1.5rem;
+    `;
+
+    const LoadingText = styled.p`
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 300;
+      margin: 0;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    `;
+
+    const ErrorContainer = styled.div`
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      margin: 2rem 0;
+      border-left: 4px solid #e74c3c;
+    `;
+
+    const ErrorIcon = styled.div`
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    `;
+
+    const ErrorTitle = styled.h3`
+      color: #e74c3c;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    `;
+
+    const ErrorText = styled.p`
+      color: #636e72;
+      font-size: 1rem;
+      margin: 0 0 1.5rem 0;
+      line-height: 1.5;
+    `;
+
+    const RetryButton = styled.button`
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 2rem;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    `;
+
+    const DisplayContainer = styled.div`
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      max-width: 800px;
+      width: 100%;
+      
+      @media (min-width: 768px) {
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+      }
+    `;
+
+    const LocationInfo = styled.div`
+      text-align: center;
+      margin-bottom: 1.5rem;
+    `;
+
+    const LocationText = styled.h2`
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin: 0;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      
+      @media (max-width: 768px) {
+        font-size: 1.3rem;
+      }
+    `;
+
+    const LastUpdated = styled.p`
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      margin: 0.5rem 0 0 0;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    `;
+
+    const Card = styled.div`
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      min-width: 200px;
+      flex: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+      
+      @media (max-width: 768px) {
+        padding: 1.5rem;
+        min-width: auto;
+      }
+    `;
+
+    const IconContainer = styled.div`
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+        margin-bottom: 0.8rem;
+      }
+    `;
+
+    const Temperature = styled.div`
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: #2d3436;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      
+      @media (max-width: 768px) {
+        font-size: 2.8rem;
+      }
+    `;
+
+    const Humidity = styled.div`
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: #2d3436;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      
+      @media (max-width: 768px) {
+        font-size: 2.8rem;
+      }
+    `;
+
+    const Unit = styled.span`
+      font-size: 1.5rem;
+      color: #636e72;
+      margin-left: 0.2rem;
+    `;
+
+    const Label = styled.p`
+      color: #636e72;
+      font-size: 1.1rem;
+      margin: 0;
+      font-weight: 500;
+      
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+    `;
+
+    const StatusText = styled.p`
+      color: #74b9ff;
+      font-size: 0.9rem;
+      margin: 0.5rem 0 0 0;
+      font-weight: 400;
+    `;
+
+    const ProgressBar = styled.div`
+      width: 100%;
+      height: 6px;
+      background-color: #ddd;
+      border-radius: 3px;
+      margin: 1rem 0 0.5rem 0;
+      overflow: hidden;
+    `;
+
+    const Progress = styled.div`
+      height: 100%;
+      background: linear-gradient(90deg, #74b9ff 0%, #0984e3 100%);
+      border-radius: 3px;
+      width: ${props => props.percentage}%;
+      transition: width 0.3s ease;
+    `;
+
+    // 组件定义
+    const LocationSelector = ({ selectedLocation, onLocationChange }) => {
+      const [customLocation, setCustomLocation] = useState('');
+      
+      const predefinedCities = [
+        '北京', '上海', '广州', '深圳', '杭州', 
+        '南京', '成都', '重庆', '武汉', '西安',
+        '天津', '青岛', '大连', '厦门', '苏州'
+      ];
+
+      const handleSelectChange = (e) => {
+        const value = e.target.value;
+        if (value === 'custom') {
+          return;
+        }
+        onLocationChange(value);
+      };
+
+      const handleCustomInputChange = (e) => {
+        setCustomLocation(e.target.value);
+      };
+
+      const handleCustomSearch = () => {
+        if (customLocation.trim()) {
+          onLocationChange(customLocation.trim());
+          setCustomLocation('');
+        }
+      };
+
+      const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+          handleCustomSearch();
+        }
+      };
+
+      return (
+        <SelectorContainer>
+          <LocationSelect 
+            value={predefinedCities.includes(selectedLocation) ? selectedLocation : 'custom'}
+            onChange={handleSelectChange}
+          >
+            {predefinedCities.map(city => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+            <option value="custom">自定义城市</option>
+          </LocationSelect>
+          
+          <CustomInput
+            type="text"
+            placeholder="输入城市名称"
+            value={customLocation}
+            onChange={handleCustomInputChange}
+            onKeyPress={handleKeyPress}
+          />
+          
+          <SearchButton onClick={handleCustomSearch}>
+            搜索天气
+          </SearchButton>
+        </SelectorContainer>
+      );
+    };
+
+    const LoadingSpinner = ({ isLoading = true }) => {
+      if (!isLoading) return null;
+
+      return (
+        <SpinnerContainer>
+          <Spinner />
+          <LoadingText>正在获取天气信息...</LoadingText>
+        </SpinnerContainer>
+      );
+    };
+
+    const ErrorMessage = ({ error, onRetry }) => {
+      if (!error) return null;
+
+      return (
+        <ErrorContainer>
+          <ErrorIcon>⚠️</ErrorIcon>
+          <ErrorTitle>获取天气信息失败</ErrorTitle>
+          <ErrorText>{error}</ErrorText>
+          {onRetry && (
+            <RetryButton onClick={onRetry}>
+              重试
+            </RetryButton>
+          )}
+        </ErrorContainer>
+      );
+    };
+
+    const TemperatureCard = ({ temperature }) => {
+      const getTemperatureStatus = (temp) => {
+        if (temp <= 0) return { status: '寒冷', icon: '🥶' };
+        if (temp <= 10) return { status: '偏冷', icon: '🧊' };
+        if (temp <= 20) return { status: '凉爽', icon: '😊' };
+        if (temp <= 30) return { status: '温暖', icon: '☀️' };
+        return { status: '炎热', icon: '🔥' };
+      };
+
+      const { status, icon } = getTemperatureStatus(temperature);
+
+      return (
+        <Card>
+          <IconContainer>{icon}</IconContainer>
+          <Temperature>
+            {Math.round(temperature)}
+            <Unit>°C</Unit>
+          </Temperature>
+          <Label>温度</Label>
+          <StatusText>{status}</StatusText>
+        </Card>
+      );
+    };
+
+    const HumidityCard = ({ humidity }) => {
+      const getHumidityStatus = (humid) => {
+        if (humid <= 30) return { status: '干燥', icon: '🏜️' };
+        if (humid <= 60) return { status: '舒适', icon: '😌' };
+        if (humid <= 80) return { status: '湿润', icon: '💧' };
+        return { status: '潮湿', icon: '🌧️' };
+      };
+
+      const { status, icon } = getHumidityStatus(humidity);
+
+      return (
+        <Card>
+          <IconContainer>{icon}</IconContainer>
+          <Humidity>
+            {Math.round(humidity)}
+            <Unit>%</Unit>
+          </Humidity>
+          <Label>湿度</Label>
+          <ProgressBar>
+            <Progress percentage={humidity} />
+          </ProgressBar>
+          <StatusText>{status}</StatusText>
+        </Card>
+      );
+    };
+
+    const WeatherDisplay = ({ weatherData }) => {
+      if (!weatherData) {
+        return null;
+      }
+
+      const { temperature, humidity, location, lastUpdated } = weatherData;
+      
+      const formatLastUpdated = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      };
+
+      return (
+        <React.Fragment>
+          <LocationInfo>
+            <LocationText>{location}</LocationText>
+            <LastUpdated>
+              最后更新: {formatLastUpdated(lastUpdated)}
+            </LastUpdated>
+          </LocationInfo>
+          
+          <DisplayContainer>
+            <TemperatureCard temperature={temperature} />
+            <HumidityCard humidity={humidity} />
+          </DisplayContainer>
+        </React.Fragment>
+      );
+    };
+
+    const WeatherApp = () => {
+      const [weatherData, setWeatherData] = useState(null);
+      const [isLoading, setIsLoading] = useState(true);
+      const [error, setError] = useState(null);
+      const [selectedLocation, setSelectedLocation] = useState('北京');
+
+      const fetchWeatherData = useCallback(async (location) => {
+        try {
+          setIsLoading(true);
+          setError(null);
+          
+          const data = await getCurrentWeather(location);
+          setWeatherData({
+            temperature: data.temperature,
+            humidity: data.humidity,
+            location: data.location,
+            lastUpdated: new Date().getTime()
+          });
+        } catch (err) {
+          setError(err.message || '获取天气信息失败，请稍后重试');
+          console.error('获取天气数据失败:', err);
+        } finally {
+          setIsLoading(false);
+        }
+      }, []);
+
+      useEffect(() => {
+        fetchWeatherData(selectedLocation);
+      }, [selectedLocation, fetchWeatherData]);
+
+      const handleLocationChange = useCallback((newLocation) => {
+        setSelectedLocation(newLocation);
+      }, []);
+
+      const handleRetry = useCallback(() => {
+        fetchWeatherData(selectedLocation);
+      }, [fetchWeatherData, selectedLocation]);
+
+      return (
+        <AppContainer>
+          <Title>天气信息</Title>
+          
+          <LocationSelector 
+            selectedLocation={selectedLocation}
+            onLocationChange={handleLocationChange}
+          />
+          
+          {isLoading && <LoadingSpinner />}
+          
+          {error && (
+            <ErrorMessage 
+              error={error}
+              onRetry={handleRetry}
+            />
+          )}
+          
+          {!isLoading && !error && weatherData && (
+            <WeatherDisplay weatherData={weatherData} />
+          )}
+        </AppContainer>
+      );
+    };
+
+    // 渲染应用
+    ReactDOM.render(<WeatherApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
