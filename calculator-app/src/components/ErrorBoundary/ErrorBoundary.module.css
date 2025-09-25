@@ -1,0 +1,138 @@
+/* ErrorBoundary Component Styles */
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 20px;
+  background: linear-gradient(145deg, #f0f0f3, #cacaca);
+  border-radius: 20px;
+  max-width: 320px;
+  margin: 2rem auto;
+  box-shadow: 
+    20px 20px 60px #bebebe,
+    -20px -20px 60px #ffffff;
+}
+
+.error-content {
+  text-align: center;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 
+    inset 8px 8px 16px #e6e6e6,
+    inset -8px -8px 16px #ffffff;
+}
+
+.error-content h2 {
+  color: #dc3545;
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.error-content p {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.error-details {
+  margin: 15px 0;
+  text-align: left;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.error-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #495057;
+  padding: 5px;
+}
+
+.error-details pre {
+  margin: 10px 0 0 0;
+  padding: 10px;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.error-reload-button {
+  background: linear-gradient(145deg, #28a745, #1e7e34);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    4px 4px 8px #1a5928,
+    -4px -4px 8px #35d556;
+}
+
+.error-reload-button:hover {
+  background: linear-gradient(145deg, #38b755, #2e8e44);
+  transform: translateY(-1px);
+  box-shadow: 
+    6px 6px 12px #1a5928,
+    -6px -6px 12px #35d556;
+}
+
+.error-reload-button:active {
+  transform: translateY(0);
+  box-shadow: 
+    inset 2px 2px 4px #1a5928,
+    inset -2px -2px 4px #35d556;
+}
+
+.error-reload-button:focus-visible {
+  outline: 2px solid #4A90E2;
+  outline-offset: 2px;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .error-boundary {
+    margin: 1rem;
+    padding: 15px;
+    border-radius: 15px;
+  }
+  
+  .error-content {
+    padding: 20px;
+  }
+  
+  .error-content h2 {
+    font-size: 20px;
+  }
+  
+  .error-content p {
+    font-size: 14px;
+  }
+  
+  .error-reload-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .error-boundary {
+    margin: 0.5rem;
+    padding: 10px;
+  }
+  
+  .error-content {
+    padding: 15px;
+  }
+}
