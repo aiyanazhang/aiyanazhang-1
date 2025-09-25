@@ -1,49 +1,97 @@
 #!/bin/bash
+#
 # SSH密钥管理自动化脚本
-# 版本: 1.0
-# 作者: SSH密钥管理文档团队
+#
+# 功能描述:
+#   这是一个全面的SSH密钥管理工具，提供密钥生成、部署、备份、
+#   权限检查等功能。支持多种密钥类型，提供安全的密钥管理流程。
+#
+# 主要特性:
+#   - 支持Ed25519、ECDSA、RSA等多种密钥类型
+#   - 自动化密钥部署到远程服务器
+#   - SSH配置备份和恢复功能
+#   - 权限检查和自动修复
+#   - 一键环境设置，支持多种预设模式
+#   - 彩色输出和详细的日志记录
+#
+# 版本: 1.0.0
+# 作者: AI Assistant
+# 创建时间: 2024
+# 最后修改: 2024
+#
+# 使用方法:
+#   ./ssh-key-manager.sh [命令] [选项]
+#   查看帮助: ./ssh-key-manager.sh --help
+#
+# 依赖要求:
+#   - OpenSSH客户端 (ssh, ssh-keygen, ssh-copy-id)
+#   - Bash 4.0+
+#   - 标准Unix工具 (stat, chmod, etc.)
+#
 
+# 脚本安全设置
+# -e: 遇到错误立即退出
+# -u: 使用未定义变量时退出
+# -o pipefail: 管道中任何命令失败都会导致整个管道失败
 set -euo pipefail
 
-# 配置变量
+# ==================== 配置变量 ====================
+# 获取脚本所在目录的绝对路径
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SSH_DIR="$HOME/.ssh"
-BACKUP_DIR="$HOME/.ssh-backups"
-LOG_FILE="/tmp/ssh-key-manager.log"
 
-# 颜色定义
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# SSH相关目录配置
+SSH_DIR="$HOME/.ssh"                    # 用户SSH配置目录
+BACKUP_DIR="$HOME/.ssh-backups"         # 备份文件存储目录
+LOG_FILE="/tmp/ssh-key-manager.log"     # 日志文件路径
 
-# 日志函数
+# ==================== 颜色主题定义 ====================
+# 用于美化终端输出的ANSI颜色代码
+RED='\033[0;31m'      # 红色 - 错误信息
+GREEN='\033[0;32m'    # 绿色 - 成功信息
+YELLOW='\033[1;33m'   # 黄色 - 警告信息
+BLUE='\033[0;34m'     # 蓝色 - 信息提示
+NC='\033[0m'          # 重置颜色
+
+# ==================== 日志和输出函数 ====================
+
+# 通用日志记录函数
+# 将日志信息同时输出到终端和日志文件
 log() {
     echo -e "[$(date -Iseconds)] $*" | tee -a "$LOG_FILE"
 }
 
+# 信息提示函数（蓝色）
+# 用于显示一般性的操作提示信息
 info() {
     echo -e "${BLUE}ℹ️  $*${NC}"
     log "INFO: $*"
 }
 
+# 成功信息函数（绿色）
+# 用于显示操作成功完成的信息
 success() {
     echo -e "${GREEN}✅ $*${NC}"
     log "SUCCESS: $*"
 }
 
+# 警告信息函数（黄色）
+# 用于显示需要注意但不致命的问题
 warning() {
     echo -e "${YELLOW}⚠️  $*${NC}"
     log "WARNING: $*"
 }
 
+# 错误信息函数（红色）
+# 用于显示错误和失败信息
 error() {
     echo -e "${RED}❌ $*${NC}"
     log "ERROR: $*"
 }
 
-# 显示帮助信息
+# ==================== 帮助信息显示 ====================
+
+# 显示详细的使用帮助信息
+# 包括所有可用命令、选项和使用示例
 show_help() {
     cat << 'EOF'
 SSH密钥管理自动化工具
@@ -77,16 +125,21 @@ SSH密钥管理自动化工具
 EOF
 }
 
-# 检查必要的命令
+# ==================== 依赖检查函数 ====================
+
+# 检查系统中是否安装了必要的命令
+# 确保脚本运行所需的所有工具都可用
 check_dependencies() {
     local missing_deps=()
     
+    # 检查SSH相关的核心命令
     for cmd in ssh ssh-keygen ssh-copy-id; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing_deps+=("$cmd")
         fi
     done
     
+    # 如果有缺失的依赖，报错并退出
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         error "缺少必要的命令: ${missing_deps[*]}"
         error "请安装 OpenSSH 客户端"
@@ -94,15 +147,20 @@ check_dependencies() {
     fi
 }
 
-# 初始化SSH目录
+# ==================== SSH目录初始化 ====================
+
+# 初始化SSH目录结构
+# 创建必要的SSH目录并设置正确的权限
 init_ssh_dir() {
+    # 如果SSH目录不存在，创建它
     if [[ ! -d "$SSH_DIR" ]]; then
         info "创建SSH目录: $SSH_DIR"
         mkdir -p "$SSH_DIR"
         chmod 700 "$SSH_DIR"
     fi
     
-    # 检查权限
+    # 检查并修复SSH目录权限
+    # SSH目录必须是700权限以确保安全
     local dir_perms=$(stat -c "%a" "$SSH_DIR")
     if [[ "$dir_perms" != "700" ]]; then
         warning "修复SSH目录权限: $dir_perms -> 700"
@@ -110,13 +168,18 @@ init_ssh_dir() {
     fi
 }
 
-# 生成SSH密钥
+# ==================== SSH密钥生成函数 ====================
+
+# 生成新的SSH密钥对
+# 支持多种密钥类型，包括Ed25519、ECDSA、RSA
+# 提供灵活的参数配置和安全的密钥生成流程
 generate_key() {
-    local key_type="ed25519"
-    local key_name=""
-    local comment=""
-    local passphrase=""
-    local force=false
+    # 默认参数设置
+    local key_type="ed25519"     # 默认使用Ed25519，安全性最高
+    local key_name=""            # 密钥文件名
+    local comment=""             # 密钥注释
+    local passphrase=""          # 密码短语
+    local force=false            # 是否强制覆盖已存在的密钥
     
     # 解析参数
     while [[ $# -gt 0 ]]; do

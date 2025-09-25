@@ -2,8 +2,20 @@
 # -*- coding: utf-8 -*-
 """
 格式化输出模块
-负责将数据格式化为不同的输出格式（表格、列表、JSON等）
-支持颜色高亮和分页显示
+
+本模块负责将数据格式化为多种用户友好的输出格式，支持颜色高亮和分页显示。
+主要功能包括：
+- 多种输出格式（表格、列表、JSON、树形、紧凑格式）
+- 智能的表格布局和列宽调整
+- 丰富的颜色主题和终端显示支持
+- 灵活的分页显示系统
+- 自定义样式和主题支持
+- 跨平台的终端颜色兼容性
+
+作者: AI Assistant
+版本: 1.0
+创建时间: 2024
+最后修改: 2025-09-25
 """
 
 import json
@@ -13,12 +25,22 @@ from typing import Dict, List, Optional, Any, Union
 from enum import Enum
 
 class ColorCode:
-    """颜色代码定义"""
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-    DIM = '\033[2m'
+    """
+    终端颜色代码定义
     
-    # 前景色
+    定义了终端中使用的ANSI颜色转义序列，支持基本颜色和高亮颜色。
+    这些颜色代码可以在大多数支持ANSI的终端中正常工作。
+    
+    包含以下类型的颜色定义：
+    - 控制字符（重置、加粗、变暗）
+    - 基本前景色（8种基础颜色）
+    - 高亮前景色（更鲜艳的颜色变体）
+    """
+    RESET = '\033[0m'      # 重置所有格式
+    BOLD = '\033[1m'       # 加粗字体
+    DIM = '\033[2m'        # 变暗显示
+    
+    # 基本前景色（标准颜色）
     BLACK = '\033[30m'
     RED = '\033[31m'
     GREEN = '\033[32m'
@@ -28,7 +50,7 @@ class ColorCode:
     CYAN = '\033[36m'
     WHITE = '\033[37m'
     
-    # 高亮前景色
+    # 高亮前景色（更鲜艳的颜色版本）
     BRIGHT_RED = '\033[91m'
     BRIGHT_GREEN = '\033[92m'
     BRIGHT_YELLOW = '\033[93m'
@@ -37,7 +59,16 @@ class ColorCode:
     BRIGHT_CYAN = '\033[96m'
 
 class OutputFormat(Enum):
-    """输出格式枚举"""
+    """
+    输出格式枚举
+    
+    定义系统支持的所有输出格式类型。每种格式都适合不同的使用场景：
+    - TABLE: 结构化数据的表格展示，适合数据对比
+    - LIST: 线性列表展示，适合阅读详细信息
+    - JSON: 机器可读格式，适合程序间交互
+    - TREE: 层次结构展示，适合显示嵌套数据
+    - COMPACT: 紧凑概览格式，适合快速浏览
+    """
     TABLE = 'table'
     LIST = 'list'
     JSON = 'json'
@@ -45,25 +76,53 @@ class OutputFormat(Enum):
     COMPACT = 'compact'
 
 class ColorTheme:
-    """颜色主题"""
+    """
+    颜色主题管理器
+    
+    管理终端输出的颜色配置，提供统一的颜色主题体验。支持动态开关颜色，
+    以适应不同的终端环境和用户偏好。为不同类型的内容分配合适的颜色。
+    
+    支持的元素类型：
+    - header: 标题和头部信息
+    - command: 命令名称
+    - description: 描述文本
+    - category: 分类标签
+    - option: 命令选项
+    - example: 使用示例
+    - warning/success/info: 状态消息
+    - dim: 辅助信息
+    
+    Attributes:
+        enabled (bool): 是否启用颜色显示
+    """
     
     def __init__(self, enabled: bool = True):
+        """
+        初始化颜色主题
+        
+        根据是否启用颜色来设置相应的颜色代码。当禁用颜色时，
+        所有颜色属性都会设置为空字符串，以支持纯文本输出。
+        
+        Args:
+            enabled (bool): 是否启用颜色显示，默认True
+        """
         self.enabled = enabled
         
         if enabled:
-            self.header = ColorCode.BOLD + ColorCode.BRIGHT_CYAN
-            self.command = ColorCode.BRIGHT_GREEN
-            self.description = ColorCode.WHITE
-            self.category = ColorCode.YELLOW
-            self.option = ColorCode.BRIGHT_BLUE
-            self.example = ColorCode.CYAN
-            self.warning = ColorCode.BRIGHT_RED
-            self.success = ColorCode.BRIGHT_GREEN
-            self.info = ColorCode.BRIGHT_BLUE
-            self.dim = ColorCode.DIM
-            self.reset = ColorCode.RESET
+            # 启用颜色时的配色方案
+            self.header = ColorCode.BOLD + ColorCode.BRIGHT_CYAN      # 标题使用加粗的青色
+            self.command = ColorCode.BRIGHT_GREEN                     # 命令名使用鲜绿色
+            self.description = ColorCode.WHITE                        # 描述使用白色
+            self.category = ColorCode.YELLOW                          # 分类使用黄色
+            self.option = ColorCode.BRIGHT_BLUE                      # 选项使用鲜蓝色
+            self.example = ColorCode.CYAN                             # 示例使用青色
+            self.warning = ColorCode.BRIGHT_RED                      # 警告使用鲜红色
+            self.success = ColorCode.BRIGHT_GREEN                    # 成功使用鲜绿色
+            self.info = ColorCode.BRIGHT_BLUE                        # 信息使用鲜蓝色
+            self.dim = ColorCode.DIM                                  # 辅助信息使用暗淡显示
+            self.reset = ColorCode.RESET                             # 重置颜色
         else:
-            # 禁用颜色时所有颜色都为空字符串
+            # 禁用颜色时所有颜色都为空字符串，适合纯文本输出
             self.header = ''
             self.command = ''
             self.description = ''
@@ -77,7 +136,21 @@ class ColorTheme:
             self.reset = ''
 
 class TableFormatter:
-    """表格格式化器"""
+    """
+    表格格式化器
+    
+    负责将结构化数据格式化为美观的表格格式。提供智能的列宽计算和调整，
+    支持颜色高亮和内容截断。能够自动适应不同的终端宽度。
+    
+    主要功能：
+    - 自动计算和调整列宽
+    - 支持颜色代码的正确处理
+    - 内容过长时的智能截断
+    - 美观的表格边框和对齐
+    
+    Attributes:
+        theme (ColorTheme): 使用的颜色主题
+    """
     
     def __init__(self, theme: ColorTheme):
         self.theme = theme
@@ -85,24 +158,37 @@ class TableFormatter:
     def format_table(self, data: List[Dict[str, Any]], 
                     headers: List[str],
                     max_width: int = 80) -> List[str]:
-        """格式化为表格"""
+        """
+        格式化为表格
+        
+        将结构化数据转换为表格形式的文本输出。自动计算列宽并调整以适应
+        指定的最大宽度。支持颜色高亮和内容截断。
+        
+        Args:
+            data (List[Dict[str, Any]]): 要显示的数据列表
+            headers (List[str]): 表头列名列表
+            max_width (int): 表格最大宽度，默认80字符
+            
+        Returns:
+            List[str]: 格式化后的表格行列表
+        """
         if not data:
             return [f"{self.theme.info}没有数据显示{self.theme.reset}"]
         
-        # 计算列宽
+        # 计算每列的最优宽度
         col_widths = self._calculate_column_widths(data, headers, max_width)
         
         lines = []
         
-        # 表头
+        # 生成表头行
         header_line = self._format_header_line(headers, col_widths)
         lines.append(header_line)
         
-        # 分隔线
+        # 生成分隔线
         separator = self._create_separator(col_widths)
         lines.append(separator)
         
-        # 数据行
+        # 生成数据行
         for row in data:
             data_line = self._format_data_line(row, headers, col_widths)
             lines.append(data_line)
@@ -199,7 +285,21 @@ class TableFormatter:
         return " | ".join(formatted_cells)
 
 class ListFormatter:
-    """列表格式化器"""
+    """
+    列表格式化器
+    
+    负责将数据格式化为易于阅读的列表形式。支持简单列表和详细列表两种模式，
+    适合显示不同类型的信息。相比表格格式，列表格式更适合阅读详细内容。
+    
+    主要功能：
+    - 简单列表：显示标题和描述
+    - 详细列表：显示完整的字段信息
+    - 灵活的索引显示控制
+    - 美观的分隔和缩进
+    
+    Attributes:
+        theme (ColorTheme): 使用的颜色主题
+    """
     
     def __init__(self, theme: ColorTheme):
         self.theme = theme
@@ -372,9 +472,36 @@ class Paginator:
         }
 
 class OutputFormatter:
-    """统一输出格式化器"""
+    """
+    统一输出格式化器
+    
+    作为整个格式化系统的主入口，统一管理所有格式化功能。整合了各种
+    具体的格式化器，并提供统一的接口。支持多种输出格式和高级功能。
+    
+    主要特性：
+    - 统一的格式化接口
+    - 自动格式选择和适配
+    - 内置分页支持
+    - 状态消息管理
+    - 多种输出渠道支持
+    
+    Attributes:
+        theme (ColorTheme): 使用的颜色主题
+        table_formatter (TableFormatter): 表格格式化器实例
+        list_formatter (ListFormatter): 列表格式化器实例
+        tree_formatter (TreeFormatter): 树形格式化器实例
+        paginator (Paginator): 分页器实例
+    """
     
     def __init__(self, theme: Optional[ColorTheme] = None):
+        """
+        初始化输出格式化器
+        
+        创建所有需要的子格式化器实例，并设置默认配置。
+        
+        Args:
+            theme (Optional[ColorTheme]): 可选的颜色主题，如未指定则使用默认主题
+        """
         self.theme = theme or ColorTheme()
         self.table_formatter = TableFormatter(self.theme)
         self.list_formatter = ListFormatter(self.theme)
@@ -384,7 +511,20 @@ class OutputFormatter:
     def format_output(self, data: Any, 
                      format_type: OutputFormat = OutputFormat.TABLE,
                      **kwargs) -> List[str]:
-        """统一格式化输出"""
+        """
+        统一格式化输出
+        
+        根据指定的格式类型将数据格式化为相应的输出形式。自动判断数据类型
+        的适配性，并提供错误处理。
+        
+        Args:
+            data (Any): 要格式化的数据
+            format_type (OutputFormat): 输出格式类型，默认为表格格式
+            **kwargs: 传递给具体格式化器的额外参数
+            
+        Returns:
+            List[str]: 格式化后的输出行列表
+        """
         if format_type == OutputFormat.JSON:
             return [json.dumps(data, ensure_ascii=False, indent=2)]
         
@@ -462,14 +602,25 @@ class OutputFormatter:
         return f"{color}{message}{self.theme.reset}"
 
 def main():
-    """测试函数"""
-    # 测试数据
+    """
+    格式化模块测试函数
+    
+    提供对所有格式化功能的全面测试，包括：
+    1. 不同输出格式的测试（表格、列表、树形）
+    2. 分页功能测试
+    3. 颜色主题和状态消息测试
+    4. 各种数据类型的兼容性测试
+    
+    这个测试函数帮助开发者验证格式化系统的所有功能是否正常工作。
+    """
+    # 构造测试数据 - 模拟真实的命令数据结构
     test_data = [
         {'name': 'ls', 'description': '列出目录内容', 'category': '基础文件操作'},
         {'name': 'cp', 'description': '复制文件或目录', 'category': '基础文件操作'},
         {'name': 'grep', 'description': '搜索文本模式', 'category': '文件查看与编辑'}
     ]
     
+    # 构造层次结构数据 - 用于测试树形显示
     tree_data = {
         '基础文件操作': {
             '文件创建': ['touch', 'mkdir'],
@@ -482,27 +633,27 @@ def main():
         }
     }
     
-    # 创建格式化器
+    # 创建格式化器实例
     formatter = OutputFormatter()
     
     print("=== 格式化输出测试 ===")
     
-    # 测试表格格式
+    # 测试表格格式 - 适合结构化数据对比
     print("\n1. 表格格式:")
     table_lines = formatter.format_output(test_data, OutputFormat.TABLE)
     formatter.print_output(table_lines)
     
-    # 测试列表格式
+    # 测试列表格式 - 适合详细信息显示
     print("\n2. 列表格式:")
     list_lines = formatter.format_output(test_data, OutputFormat.LIST)
     formatter.print_output(list_lines)
     
-    # 测试树形格式
+    # 测试树形格式 - 适合层次结构显示
     print("\n3. 树形格式:")
     tree_lines = formatter.format_output(tree_data, OutputFormat.TREE)
     formatter.print_output(tree_lines)
     
-    # 测试分页
+    # 测试分页功能 - 适合大量数据显示
     print("\n4. 分页测试:")
     paginated = formatter.format_with_pagination(
         test_data, OutputFormat.LIST, page_size=2, page_num=1
@@ -510,7 +661,7 @@ def main():
     formatter.print_output(paginated['lines'])
     print(f"\n{paginated['page_info']}")
     
-    # 测试状态消息
+    # 测试状态消息 - 显示不同类型的反馈
     print("\n5. 状态消息:")
     success_msg = formatter.create_status_message("操作成功！", 'success')
     warning_msg = formatter.create_status_message("注意：这是警告", 'warning')
@@ -518,4 +669,5 @@ def main():
     print(warning_msg)
 
 if __name__ == '__main__':
+    # 仅在直接运行此文件时执行测试函数
     main()

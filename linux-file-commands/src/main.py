@@ -2,7 +2,20 @@
 # -*- coding: utf-8 -*-
 """
 Linux文件操作命令查询工具主程序
-整合所有模块，提供命令行和交互式界面
+
+本模块是Linux文件操作命令查询工具的主入口程序，负责整合所有功能模块，
+提供命令行和交互式两种使用界面。支持命令查询、分类浏览、详细信息显示等功能。
+
+主要功能：
+- 命令行模式：支持直接通过参数执行查询操作
+- 交互式模式：提供友好的交互界面，支持连续操作
+- 多种输出格式：表格、列表、JSON等多种显示方式
+- 高级搜索：支持关键词搜索和过滤功能
+- 命令详情：提供详细的命令说明、参数、示例等信息
+
+作者: AI Assistant
+版本: 1.0.0
+创建时间: 2024
 """
 
 import sys
@@ -20,9 +33,40 @@ from detail import CommandDetailManager, CommandDetailFormatter, CommandComparis
 from formatter import OutputFormatter, OutputFormat, ColorTheme
 
 class LinuxFileCommandsTool:
-    """Linux文件操作命令工具主类"""
+    """
+    Linux文件操作命令工具主类
+    
+    这是整个工具的核心控制类，负责协调各个功能模块的工作，
+    管理用户交互，处理命令行参数，并提供统一的输出格式。
+    
+    属性:
+        data_dir (Path): 数据文件目录路径
+        commands_file (Path): 命令数据文件路径
+        categories_file (Path): 分类数据文件路径
+        
+    主要组件:
+        - category_manager: 分类管理器
+        - search_engine: 搜索引擎
+        - detail_manager: 详情管理器
+        - formatter: 输出格式化器
+        - cmd_parser: 命令行解析器
+        - interactive_parser: 交互式解析器
+    
+    作者: AI Assistant
+    """
     
     def __init__(self, data_dir: str, enable_color: bool = True):
+        """
+        初始化Linux文件命令工具
+        
+        Args:
+            data_dir (str): 数据文件目录路径
+            enable_color (bool): 是否启用彩色输出，默认为True
+            
+        Raises:
+            FileNotFoundError: 当数据文件不存在时抛出
+            RuntimeError: 当组件初始化失败时抛出
+        """
         self.data_dir = Path(data_dir)
         self.commands_file = self.data_dir / 'commands.json'
         self.categories_file = self.data_dir / 'categories.json'
@@ -31,7 +75,19 @@ class LinuxFileCommandsTool:
         self._initialize_components(enable_color)
     
     def _initialize_components(self, enable_color: bool) -> None:
-        """初始化各个组件"""
+        """
+        初始化各个功能组件
+        
+        按照依赖关系初始化所有必要的组件，包括数据管理器、
+        搜索引擎、格式化器等。确保组件间的正确协作。
+        
+        Args:
+            enable_color (bool): 是否启用彩色输出
+            
+        Raises:
+            FileNotFoundError: 当必要的数据文件不存在时
+            RuntimeError: 当任何组件初始化失败时
+        """
         # 检查数据文件
         if not self.commands_file.exists():
             raise FileNotFoundError(f"命令数据文件不存在: {self.commands_file}")
@@ -63,7 +119,22 @@ class LinuxFileCommandsTool:
             raise RuntimeError(f"初始化组件失败: {e}")
     
     def run_command_line(self, args: Optional[List[str]] = None) -> int:
-        """运行命令行模式"""
+        """
+        运行命令行模式
+        
+        解析命令行参数并执行相应的操作。支持各种查询、搜索、
+        列表显示等功能。
+        
+        Args:
+            args (Optional[List[str]]): 命令行参数列表，如果为None则使用sys.argv
+            
+        Returns:
+            int: 退出码，0表示成功，非0表示失败
+            
+        Examples:
+            >>> tool = LinuxFileCommandsTool('/path/to/data')
+            >>> exit_code = tool.run_command_line(['--search', 'find'])
+        """
         try:
             # 解析参数
             parsed_args = self.cmd_parser.parse_args(args)
@@ -86,7 +157,21 @@ class LinuxFileCommandsTool:
             return 1
     
     def run_interactive(self) -> int:
-        """运行交互模式"""
+        """
+        运行交互式模式
+        
+        提供一个友好的交互式界面，用户可以连续执行多个操作，
+        包括搜索命令、查看详情、浏览分类等。支持命令补全和帮助。
+        
+        Returns:
+            int: 退出码，0表示正常退出，非0表示异常退出
+            
+        Features:
+            - 实时命令解析
+            - 错误处理和提示
+            - 优雅的中断处理
+            - 彩色输出和格式化
+        """
         try:
             self._print_welcome()
             
@@ -141,7 +226,12 @@ class LinuxFileCommandsTool:
             return 1
     
     def _print_welcome(self) -> None:
-        """打印欢迎信息"""
+        """
+        打印交互模式的欢迎信息
+        
+        显示工具的标题、版本信息和基本使用提示，
+        为用户提供友好的开始体验。
+        """
         welcome_text = f"""
 {self.theme.header}╔═══════════════════════════════════════════════════════════════╗
 ║                 Linux 文件操作命令查询工具                    ║
@@ -153,7 +243,26 @@ class LinuxFileCommandsTool:
         print(welcome_text)
     
     def _execute_operation(self, config: Dict[str, Any]) -> bool:
-        """执行操作"""
+        """
+        执行具体的操作
+        
+        根据配置信息调用相应的处理函数，执行用户请求的操作。
+        这是所有操作的统一入口点。
+        
+        Args:
+            config (Dict[str, Any]): 操作配置，包含操作类型、显示配置、过滤条件等
+            
+        Returns:
+            bool: 操作是否成功执行
+            
+        Supported Operations:
+            - list_all: 列出所有命令
+            - list_by_category: 按分类列出命令
+            - list_categories: 列出所有分类
+            - search: 搜索命令
+            - show_detail: 显示命令详情
+            - interactive: 进入交互模式
+        """
         operation = config['operation']
         display_config = config['display']
         filters = config['filters']
@@ -428,7 +537,22 @@ class LinuxFileCommandsTool:
         return format_map.get(format_str, OutputFormat.TABLE)
 
 def main():
-    """主函数"""
+    """
+    程序主入口函数
+    
+    负责程序的启动逻辑，包括参数检查、工具实例化、
+    模式选择等。根据命令行参数决定启动命令行模式还是交互模式。
+    
+    逻辑流程:
+    1. 确定数据目录位置
+    2. 创建工具实例
+    3. 根据参数选择运行模式
+    4. 处理异常和退出码
+    
+    异常处理:
+    - KeyboardInterrupt: 用户中断
+    - 其他异常: 程序错误
+    """
     # 获取数据目录
     script_dir = Path(__file__).parent
     data_dir = script_dir.parent / 'data'
@@ -452,5 +576,7 @@ def main():
         print(f"程序错误: {e}", file=sys.stderr)
         sys.exit(1)
 
+# 程序入口点
+# 当脚本被直接执行时启动主函数
 if __name__ == '__main__':
     main()
