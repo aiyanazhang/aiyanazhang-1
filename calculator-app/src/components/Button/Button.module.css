@@ -1,0 +1,139 @@
+/* Button Component Styles */
+.button {
+  width: 100%;
+  height: 100%;
+  min-height: 50px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.button:focus-visible {
+  outline: 2px solid #4A90E2;
+  outline-offset: 2px;
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.label {
+  display: block;
+  pointer-events: none;
+}
+
+/* Button type styles */
+.number {
+  background: linear-gradient(145deg, #ffffff, #e0e0e0);
+  color: #333;
+  box-shadow: 
+    8px 8px 16px #bebebe,
+    -8px -8px 16px #ffffff;
+}
+
+.number:hover {
+  background: linear-gradient(145deg, #f8f8f8, #d8d8d8);
+  box-shadow: 
+    6px 6px 12px #bebebe,
+    -6px -6px 12px #ffffff;
+}
+
+.number:active {
+  box-shadow: 
+    inset 4px 4px 8px #bebebe,
+    inset -4px -4px 8px #ffffff;
+}
+
+.operation {
+  background: linear-gradient(145deg, #4A90E2, #357ABD);
+  color: white;
+  box-shadow: 
+    8px 8px 16px #2d5aa0,
+    -8px -8px 16px #6ba6ff;
+}
+
+.operation:hover {
+  background: linear-gradient(145deg, #5ba0f2, #4585cd);
+  box-shadow: 
+    6px 6px 12px #2d5aa0,
+    -6px -6px 12px #6ba6ff;
+}
+
+.operation:active {
+  box-shadow: 
+    inset 4px 4px 8px #2d5aa0,
+    inset -4px -4px 8px #6ba6ff;
+}
+
+.equals {
+  background: linear-gradient(145deg, #28a745, #1e7e34);
+  color: white;
+  box-shadow: 
+    8px 8px 16px #1a5928,
+    -8px -8px 16px #35d556;
+}
+
+.equals:hover {
+  background: linear-gradient(145deg, #38b755, #2e8e44);
+  box-shadow: 
+    6px 6px 12px #1a5928,
+    -6px -6px 12px #35d556;
+}
+
+.equals:active {
+  box-shadow: 
+    inset 4px 4px 8px #1a5928,
+    inset -4px -4px 8px #35d556;
+}
+
+.function {
+  background: linear-gradient(145deg, #6c757d, #495057);
+  color: white;
+  box-shadow: 
+    8px 8px 16px #3a4043,
+    -8px -8px 16px #8e9499;
+}
+
+.function:hover {
+  background: linear-gradient(145deg, #7c858d, #596067);
+  box-shadow: 
+    6px 6px 12px #3a4043,
+    -6px -6px 12px #8e9499;
+}
+
+.function:active {
+  box-shadow: 
+    inset 4px 4px 8px #3a4043,
+    inset -4px -4px 8px #8e9499;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .button {
+    min-height: 45px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 320px) {
+  .button {
+    min-height: 40px;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+}
