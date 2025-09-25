@@ -1,0 +1,38 @@
+AllCops:
+  TargetRubyVersion: 3.0
+  NewCops: enable
+  Exclude:
+    - 'vendor/**/*'
+    - 'data/**/*'
+
+# 允许较长的行，因为演示代码可能包含详细注释
+Layout/LineLength:
+  Max: 120
+
+# 允许较长的方法，因为演示方法可能包含多个示例
+Metrics/MethodLength:
+  Max: 30
+
+# 允许较长的类，因为演示类可能包含多个示例方法
+Metrics/ClassLength:
+  Max: 200
+
+# 允许较多的行数，因为演示文件可能包含大量注释和示例
+Metrics/ModuleLength:
+  Max: 200
+
+# 允许较复杂的方法，因为演示可能需要展示复杂逻辑
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# 文档要求
+Style/Documentation:
+  Enabled: false
+
+# 字符串字面量
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+# 冻结字符串
+Style/FrozenStringLiteralComment:
+  Enabled: false

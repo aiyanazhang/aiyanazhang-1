@@ -1,0 +1,27 @@
+source 'https://rubygems.org'
+
+ruby '>= 3.0.0'
+
+# 测试框架
+gem 'rspec', '~> 3.12'
+
+# 代码风格检查
+gem 'rubocop', '~> 1.50'
+
+# 文档生成
+gem 'yard', '~> 0.9'
+
+# 彩色输出支持
+gem 'colorize', '~> 0.8'
+
+# 开发依赖
+group :development do
+  gem 'pry', '~> 0.14'  # 调试工具
+  gem 'bundler', '~> 2.0'
+end
+
+group :test do
+  gem 'rspec-core', '~> 3.12'
+  gem 'rspec-expectations', '~> 3.12'
+  gem 'rspec-mocks', '~> 3.12'
+end
