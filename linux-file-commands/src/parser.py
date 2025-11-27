@@ -2,7 +2,28 @@
 # -*- coding: utf-8 -*-
 """
 命令解析器模块
-负责解析用户输入的命令行参数，并路由到相应的操作
+
+本模块负责解析用户输入的命令行参数和交互式命令，提供两种不同的解析器：
+1. CommandParser: 处理命令行参数解析，支持各种选项和过滤条件
+2. InteractiveParser: 处理交互模式下的用户输入，支持简化的命令语法
+
+主要功能:
+- 命令行参数解析和验证
+- 交互式命令识别和路由
+- 参数有效性检查
+- 帮助信息生成
+- 错误处理和用户提示
+
+支持的操作类型:
+- list_all: 列出所有命令
+- list_by_category: 按分类列出命令
+- search: 搜索命令
+- show_detail: 显示命令详情
+- interactive: 进入交互模式
+
+作者: AI Assistant
+版本: 1.0.0
+创建时间: 2024
 """
 
 import argparse
@@ -10,13 +31,55 @@ import sys
 from typing import Dict, List, Optional, Any
 
 class CommandParser:
-    """命令行参数解析器"""
+    """
+    命令行参数解析器
+    
+    负责解析和验证从命令行传入的参数，将用户输入转换为程序可以理解的配置。
+    支持多种操作模式和丰富的显示选项，提供灵活的过滤和排序功能。
+    
+    主要职责:
+    - 定义和管理命令行参数结构
+    - 解析用户输入的参数
+    - 验证参数的有效性和完整性
+    - 生成标准化的操作配置
+    - 提供帮助和使用说明
+    
+    属性:
+        parser (argparse.ArgumentParser): argparse解析器实例
+    
+    使用示例:
+        >>> parser = CommandParser()
+        >>> args = parser.parse_args(['--search', 'find'])
+        >>> config = parser.validate_args(args)
+    
+    作者: AI Assistant
+    """
     
     def __init__(self):
+        """
+        初始化命令行参数解析器
+        
+        创建argparse解析器实例并配置所有支持的命令行选项。
+        设置互斥组、参数组和默认值等。
+        """
         self.parser = self._create_parser()
     
     def _create_parser(self) -> argparse.ArgumentParser:
-        """创建参数解析器"""
+        """
+        创建并配置argparse参数解析器
+        
+        定义所有支持的命令行选项，包括主要操作选项、显示选项、
+        过滤选项等。设置参数的类型、默认值、帮助信息等。
+        
+        Returns:
+            argparse.ArgumentParser: 配置完成的参数解析器
+            
+        Features:
+            - 互斥的主要操作选项
+            - 分组的显示和过滤选项
+            - 详细的帮助信息和使用示例
+            - 自定义的格式化器
+        """
         parser = argparse.ArgumentParser(
             prog='linux-file-commands',
             description='Linux文件操作命令查询工具',
@@ -118,11 +181,52 @@ class CommandParser:
         return parser
     
     def parse_args(self, args: Optional[List[str]] = None) -> argparse.Namespace:
-        """解析命令行参数"""
+        """
+        解析命令行参数
+        
+        使用argparse解析器处理命令行参数，如果解析失败会自动显示
+        错误信息和帮助。
+        
+        Args:
+            args (Optional[List[str]]): 要解析的参数列表，如果为None则使用sys.argv
+            
+        Returns:
+            argparse.Namespace: 解析后的参数对象
+            
+        Raises:
+            SystemExit: 当参数解析失败或用户请求帮助时
+        """
         return self.parser.parse_args(args)
     
     def validate_args(self, args: argparse.Namespace) -> Dict[str, Any]:
-        """验证参数并返回操作配置"""
+        """
+        验证参数并生成操作配置
+        
+        对解析后的参数进行验证，并转换为程序内部使用的标准化配置格式。
+        检查参数的有效性和一致性。
+        
+        Args:
+            args (argparse.Namespace): argparse解析后的参数对象
+            
+        Returns:
+            Dict[str, Any]: 标准化的配置字典，包含以下键：
+                - operation: 操作类型和参数
+                - display: 显示选项配置
+                - filters: 过滤条件配置
+                - config_file: 配置文件路径
+                
+        Raises:
+            ValueError: 当参数验证失败时
+            
+        Example:
+            配置结构:
+            {
+                'operation': {'type': 'search', 'keyword': 'find'},
+                'display': {'format': 'table', 'sort': 'name'},
+                'filters': {'difficulty': '中级'},
+                'config_file': None
+            }
+        """
         config = {
             'operation': self._determine_operation(args),
             'display': self._extract_display_options(args),
@@ -136,7 +240,25 @@ class CommandParser:
         return config
     
     def _determine_operation(self, args: argparse.Namespace) -> Dict[str, Any]:
-        """确定要执行的操作"""
+        """
+        根据参数确定要执行的操作类型
+        
+        分析解析后的参数，确定用户想要执行的具体操作。
+        处理互斥选项的优先级和默认行为。
+        
+        Args:
+            args (argparse.Namespace): 解析后的参数对象
+            
+        Returns:
+            Dict[str, Any]: 操作配置字典，包含操作类型和相关参数
+            
+        Operation Types:
+            - list_all: 列出所有命令
+            - list_by_category: 按分类列出命令
+            - search: 搜索命令
+            - show_detail: 显示命令详情
+            - interactive: 交互模式（默认）
+        """
         if args.list:
             return {'type': 'list_all'}
         elif args.category:
@@ -197,7 +319,29 @@ class CommandParser:
         self.parser.print_usage()
 
 class InteractiveParser:
-    """交互模式命令解析器"""
+    """
+    交互模式命令解析器
+    
+    专门处理交互模式下用户输入的命令，提供更加友好和简化的命令语法。
+    支持命令补全、别名、简写等交互式特性。
+    
+    主要功能:
+    - 解析交互式命令输入
+    - 提供命令别名和简写支持
+    - 生成帮助和提示信息
+    - 处理特殊命令（如quit、help等）
+    - 错误恢复和用户引导
+    
+    支持的交互命令:
+    - help, h, ?: 显示帮助
+    - quit, q, exit: 退出程序
+    - list, l: 列出所有命令
+    - search <keyword>, s <keyword>: 搜索命令
+    - detail <command>, d <command>: 显示详情
+    - category <name>, c <name>: 按分类列出
+    
+    作者: AI Assistant
+    """
     
     def __init__(self):
         self.commands = {

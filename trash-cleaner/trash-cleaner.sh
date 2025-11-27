@@ -1,39 +1,94 @@
 #!/bin/bash
-
+#!/bin/bash
+#
 # 回收站清理工具 - 主入口脚本
+#
+# 功能描述:
+#   这是一个安全、高效、跨平台的回收站清理工具。能够智能识别
+#   不同操作系统的回收站位置，提供多种清理模式，并确保操作的安全性。
+#
+# 主要特性:
+#   - 跨平台支持: Linux、macOS、Windows (WSL/Cygwin)
+#   - 多层安全验证: 防止意外删除重要文件
+#   - 灵活的过滤选项: 按时间、大小、类型等过滤
+#   - 预览模式: 先查看再删除，避免误操作
+#   - 详细日志: 完整的操作记录和审计跟踪
+#   - 友好界面: 直观的进度显示和用户交互
+#
 # 版本: 1.0.0
-# 描述: 安全、高效、跨平台的回收站清理工具
-# 作者: trash-cleaner 开发团队
+# 作者: AI Assistant
+# 创建时间: 2024
+# 最后修改: 2024
+#
+# 使用方法:
+#   ./trash-cleaner.sh [选项]
+#   查看帮助: ./trash-cleaner.sh --help
+#
+# 依赖要求:
+#   - Bash 4.0+
+#   - 标准Unix工具集 (find, stat, du, date, etc.)
+#   - 可选: trash-cli (提高Linux兼容性)
+#
 
-set -euo pipefail  # 严格错误处理
+# 脚本安全设置
+# -e: 遇到错误立即退出
+# -u: 使用未定义变量时退出  
+# -o pipefail: 管道中任何命令失败都会导致整个管道失败
+set -euo pipefail
 
-# 脚本根目录
+# ==================== 环境配置 ====================
+
+# 获取脚本所在目录的绝对路径
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 源代码模块目录
 SRC_DIR="$SCRIPT_DIR/src"
 
-# 版本信息
+# ==================== 版本信息 ====================
+
+# 应用程序版本号
 VERSION="1.0.0"
+# 构建日期（动态生成）
 BUILD_DATE="$(date '+%Y-%m-%d')"
 
-# 导入所有核心模块
+# ==================== 模块导入 ====================
+# 按照依赖关系导入所有核心功能模块
+
+# 系统检测模块 - 识别操作系统类型和版本
 source "$SRC_DIR/system_detector.sh"
+
+# 安全检查模块 - 确保操作安全性
 source "$SRC_DIR/security_checker.sh"
+
+# 配置管理模块 - 处理用户配置和参数
 source "$SRC_DIR/config_manager.sh"
+
+# 回收站扫描模块 - 发现和分析回收站内容
 source "$SRC_DIR/trash_scanner.sh"
+
+# 清理执行模块 - 执行实际的清理操作
 source "$SRC_DIR/cleanup_executor.sh"
+
+# 日志系统模块 - 记录和管理日志
 source "$SRC_DIR/logger.sh"
+
+# 用户界面模块 - 处理用户交互和显示
 source "$SRC_DIR/ui.sh"
 
-# 应用程序状态
+# ==================== 应用程序状态 ====================
+# 使用关联数组跟踪应用程序的运行状态
+
 declare -A APP_STATE=(
-    ["initialized"]=false
-    ["config_loaded"]=false
-    ["logging_enabled"]=false
-    ["operation_mode"]="interactive"
-    ["exit_code"]=0
+    ["initialized"]=false          # 应用是否已初始化
+    ["config_loaded"]=false         # 配置是否已加载
+    ["logging_enabled"]=false       # 日志系统是否已启用
+    ["operation_mode"]="interactive" # 运行模式：交互/自动/预览
+    ["exit_code"]=0                # 退出码
 )
 
-# 显示版本信息
+# ==================== 版本信息显示 ====================
+
+# 显示详细的版本信息和应用程序特性
+# 包括版本号、构建日期、功能特性和许可信息
 show_version() {
     cat <<EOF
 trash-cleaner v$VERSION (构建日期: $BUILD_DATE)
@@ -53,17 +108,20 @@ trash-cleaner v$VERSION (构建日期: $BUILD_DATE)
 EOF
 }
 
-# 应用初始化
+# ==================== 应用程序初始化 ====================
+
+# 执行应用程序的初始化流程
+# 包括依赖检查、环境检测、安全沙箱创建等
 initialize_application() {
     log_info "APP" "开始初始化应用程序"
     
-    # 检查必要的依赖
+    # 检查系统中是否安装了必要的命令工具
     if ! check_required_commands; then
         log_fatal "APP" "缺少必要的系统命令"
         return 1
     fi
     
-    # 检查运行环境
+    # 检测并验证当前运行环境
     local os_type
     os_type=$(detect_os)
     if [[ "$os_type" == "unknown" ]]; then
@@ -73,7 +131,7 @@ initialize_application() {
     
     log_info "APP" "检测到操作系统: $os_type"
     
-    # 创建安全沙箱
+    # 创建安全沙箱环境以防止意外操作
     if ! create_security_sandbox; then
         log_error "APP" "无法创建安全沙箱"
         return 1
