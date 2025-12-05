@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="header">
+    <text class="title">今天吃什么？</text>
+    <text class="subtitle">三菜一汤随机生成</text>
+  </view>
+
+  <view class="menu-card" wx:if="{{menu}}">
+    <view class="section">
+      <view class="section-title">
+        <text class="icon">🍽️</text>
+        <text>今日菜单</text>
+      </view>
+      
+      <view class="dish-list">
+        <view class="dish-item" wx:for="{{menu.dishes}}" wx:key="id">
+          <text class="dish-number">{{index + 1}}</text>
+          <text class="dish-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">
+        <text class="icon">🥣</text>
+        <text>汤品</text>
+      </view>
+      <view class="soup-item">
+        <text class="dish-name">{{menu.soup.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!menu && !loading}}">
+    <text>点击下方按钮生成菜单</text>
+  </view>
+
+  <view class="button-group">
+    <button class="btn btn-primary" bindtap="generateNewMenu" loading="{{loading}}">
+      {{loading ? '生成中...' : '换一批'}}
+    </button>
+    <button class="btn btn-secondary" bindtap="saveToFavorites" disabled="{{!menu || loading}}">
+      收藏这份菜单
+    </button>
+  </view>
+</view>

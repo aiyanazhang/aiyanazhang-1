@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/dishes/dishes",
+    "pages/favorites/favorites"
+  ],
+  "window": {
+    "navigationBarTitleText": "今天吃什么",
+    "navigationBarBackgroundColor": "#4CAF50",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#4CAF50",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "随机生成",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/dishes/dishes",
+        "text": "菜品管理",
+        "iconPath": "images/dish.png",
+        "selectedIconPath": "images/dish-active.png"
+      },
+      {
+        "pagePath": "pages/favorites/favorites",
+        "text": "我的收藏",
+        "iconPath": "images/star.png",
+        "selectedIconPath": "images/star-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
