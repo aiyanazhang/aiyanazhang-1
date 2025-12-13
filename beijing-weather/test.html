@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气应用测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .main-app-link {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .main-app-link:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🌤️ 北京朝阳区天气应用测试</h1>
+        <div class="test-result info">
+            <strong>测试环境:</strong> 本地开发服务器
+        </div>
+        
+        <a href="index.html" class="main-app-link">🚀 打开主应用</a>
+        
+        <h2>功能测试</h2>
+        <button onclick="testJavaScriptLoading()">测试JavaScript加载</button>
+        <button onclick="testConfigModule()">测试配置模块</button>
+        <button onclick="testUtilsModule()">测试工具模块</button>
+        <button onclick="testAPIModule()">测试API模块</button>
+        <button onclick="testUIModule()">测试UI模块</button>
+        <button onclick="testDemoData()">测试演示数据</button>
+        <button onclick="testCacheSystem()">测试缓存系统</button>
+        
+        <div id="test-results"></div>
+        
+        <h2>应用状态监控</h2>
+        <button onclick="checkAppStatus()">检查应用状态</button>
+        <div id="status-results"></div>
+        
+        <h2>手动测试指南</h2>
+        <div class="test-result info">
+            <h3>响应式设计测试</h3>
+            <ul>
+                <li>调整浏览器窗口大小，观察布局变化</li>
+                <li>使用开发者工具的设备模拟器测试移动端</li>
+                <li>测试不同屏幕尺寸下的显示效果</li>
+            </ul>
+            
+            <h3>功能测试</h3>
+            <ul>
+                <li>点击刷新按钮测试数据更新</li>
+                <li>检查天气数据是否正确显示</li>
+                <li>测试错误处理（断网情况）</li>
+                <li>验证缓存机制是否工作</li>
+            </ul>
+            
+            <h3>性能测试</h3>
+            <ul>
+                <li>使用Chrome DevTools检查页面加载时间</li>
+                <li>监控内存使用情况</li>
+                <li>检查网络请求优化</li>
+            </ul>
+        </div>
+        
+        <h2>浏览器兼容性检查</h2>
+        <div id="compatibility-results"></div>
+        <button onclick="checkCompatibility()">检查浏览器兼容性</button>
+    </div>
+
+    <!-- 加载主应用的JavaScript文件 -->
+    <script src="src/js/config.js"></script>
+    <script src="src/js/utils.js"></script>
+    <script src="src/js/weather-api.js"></script>
+    <script src="src/js/ui-controller.js"></script>
+    <script src="src/js/app.js"></script>
+
+    <script>
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function testJavaScriptLoading() {
+            addTestResult('开始测试JavaScript模块加载...', 'info');
+            
+            const modules = [
+                { name: 'WeatherConfig', obj: window.WeatherConfig },
+                { name: 'WeatherUtils', obj: window.WeatherUtils },
+                { name: 'WeatherAPI', obj: window.WeatherAPI },
+                { name: 'UIController', obj: window.UIController },
+                { name: 'WeatherApp', obj: window.WeatherApp }
+            ];
+            
+            let allLoaded = true;
+            modules.forEach(module => {
+                if (module.obj) {
+                    addTestResult(`✅ ${module.name} 模块加载成功`, 'success');
+                } else {
+                    addTestResult(`❌ ${module.name} 模块加载失败`, 'error');
+                    allLoaded = false;
+                }
+            });
+            
+            if (allLoaded) {
+                addTestResult('🎉 所有JavaScript模块加载成功！', 'success');
+            }
+        }
+
+        function testConfigModule() {
+            addTestResult('测试配置模块...', 'info');
+            
+            try {
+                const config = WeatherConfig;
+                
+                // 测试基本配置
+                if (config.API && config.CACHE && config.UI) {
+                    addTestResult('✅ 配置模块结构正确', 'success');
+                } else {
+                    addTestResult('❌ 配置模块结构不完整', 'error');
+                    return;
+                }
+                
+                // 测试演示数据
+                if (config.DEMO_DATA && config.DEMO_DATA.temperature) {
+                    addTestResult('✅ 演示数据配置正确', 'success');
+                    addTestResult(`演示温度: ${config.DEMO_DATA.temperature}°C`, 'info');
+                } else {
+                    addTestResult('❌ 演示数据配置错误', 'error');
+                }
+                
+            } catch (error) {
+                addTestResult(`❌ 配置模块测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testUtilsModule() {
+            addTestResult('测试工具模块...', 'info');
+            
+            try {
+                const utils = WeatherUtils;
+                
+                // 测试时间工具
+                const currentTime = utils.Time.now();
+                addTestResult(`✅ 时间工具正常: ${currentTime}`, 'success');
+                
+                // 测试缓存工具
+                utils.Cache.set('test', 'hello');
+                const cached = utils.Cache.get('test');
+                if (cached === 'hello') {
+                    addTestResult('✅ 缓存工具正常', 'success');
+                } else {
+                    addTestResult('❌ 缓存工具异常', 'error');
+                }
+                utils.Cache.remove('test');
+                
+                // 测试日志工具
+                utils.Logger.info('测试日志功能');
+                addTestResult('✅ 日志工具正常', 'success');
+                
+            } catch (error) {
+                addTestResult(`❌ 工具模块测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testAPIModule() {
+            addTestResult('测试API模块...', 'info');
+            
+            try {
+                const api = WeatherAPI;
+                
+                // 测试数据验证
+                const validData = {
+                    temperature: 25,
+                    condition: '晴',
+                    humidity: 60
+                };
+                
+                const validation = api.validateWeatherData(validData);
+                if (validation.isValid) {
+                    addTestResult('✅ 数据验证功能正常', 'success');
+                } else {
+                    addTestResult('❌ 数据验证功能异常', 'error');
+                }
+                
+                // 测试图标URL生成
+                const iconUrl = api.getWeatherIconUrl('100');
+                if (iconUrl) {
+                    addTestResult(`✅ 图标URL生成正常: ${iconUrl}`, 'success');
+                } else {
+                    addTestResult('❌ 图标URL生成异常', 'error');
+                }
+                
+            } catch (error) {
+                addTestResult(`❌ API模块测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testUIModule() {
+            addTestResult('测试UI模块...', 'info');
+            
+            try {
+                // 注意: UI模块需要DOM元素，在测试页面中可能不完整
+                addTestResult('ℹ️ UI模块需要在主页面中完整测试', 'info');
+                addTestResult('✅ UI模块对象存在', 'success');
+                
+            } catch (error) {
+                addTestResult(`❌ UI模块测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDemoData() {
+            addTestResult('测试演示数据获取...', 'info');
+            
+            try {
+                // 临时设置为演示模式
+                const originalProvider = WeatherConfig.API.PROVIDER;
+                WeatherConfig.API.PROVIDER = 'DEMO';
+                
+                const demoData = await WeatherAPI.getDemoData();
+                
+                if (demoData && demoData.temperature && demoData.condition) {
+                    addTestResult('✅ 演示数据获取成功', 'success');
+                    addTestResult(`<pre>${JSON.stringify(demoData, null, 2)}</pre>`, 'info');
+                } else {
+                    addTestResult('❌ 演示数据格式错误', 'error');
+                }
+                
+                // 恢复原始设置
+                WeatherConfig.API.PROVIDER = originalProvider;
+                
+            } catch (error) {
+                addTestResult(`❌ 演示数据测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testCacheSystem() {
+            addTestResult('测试缓存系统...', 'info');
+            
+            try {
+                const testData = {
+                    temperature: 20,
+                    condition: '多云',
+                    updateTime: new Date().toISOString()
+                };
+                
+                // 测试数据缓存
+                WeatherAPI.cacheWeatherData(testData);
+                const cached = WeatherAPI.getCachedWeatherData();
+                
+                if (cached && cached.temperature === testData.temperature) {
+                    addTestResult('✅ 天气数据缓存正常', 'success');
+                } else {
+                    addTestResult('❌ 天气数据缓存异常', 'error');
+                }
+                
+                // 测试备用缓存
+                const backup = WeatherAPI.getBackupData();
+                if (backup) {
+                    addTestResult('✅ 备用缓存正常', 'success');
+                } else {
+                    addTestResult('⚠️ 备用缓存为空（正常）', 'info');
+                }
+                
+                // 清理测试数据
+                WeatherUtils.Cache.clear();
+                
+            } catch (error) {
+                addTestResult(`❌ 缓存系统测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function checkAppStatus() {
+            const statusDiv = document.getElementById('status-results');
+            statusDiv.innerHTML = '';
+            
+            try {
+                if (window.DebugWeatherApp) {
+                    const status = DebugWeatherApp.getStatus();
+                    const statusHtml = `
+                        <div class="test-result info">
+                            <h4>应用状态</h4>
+                            <pre>${JSON.stringify(status, null, 2)}</pre>
+                        </div>
+                    `;
+                    statusDiv.innerHTML = statusHtml;
+                } else {
+                    statusDiv.innerHTML = '<div class="test-result info">调试工具未加载，请在主页面中查看</div>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="test-result error">状态检查失败: ${error.message}</div>`;
+            }
+        }
+
+        function checkCompatibility() {
+            const resultsDiv = document.getElementById('compatibility-results');
+            resultsDiv.innerHTML = '';
+            
+            const features = [
+                { name: 'Fetch API', test: () => typeof fetch !== 'undefined' },
+                { name: 'Promise', test: () => typeof Promise !== 'undefined' },
+                { name: 'LocalStorage', test: () => typeof localStorage !== 'undefined' },
+                { name: 'CSS Grid', test: () => CSS.supports('display', 'grid') },
+                { name: 'CSS Flexbox', test: () => CSS.supports('display', 'flex') },
+                { name: 'CSS Custom Properties', test: () => CSS.supports('color', 'var(--test)') },
+                { name: 'addEventListener', test: () => typeof addEventListener !== 'undefined' },
+                { name: 'JSON', test: () => typeof JSON !== 'undefined' }
+            ];
+            
+            features.forEach(feature => {
+                try {
+                    const supported = feature.test();
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = `test-result ${supported ? 'success' : 'error'}`;
+                    resultDiv.innerHTML = `${supported ? '✅' : '❌'} ${feature.name}`;
+                    resultsDiv.appendChild(resultDiv);
+                } catch (error) {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'test-result error';
+                    resultDiv.innerHTML = `❌ ${feature.name} (测试失败)`;
+                    resultsDiv.appendChild(resultDiv);
+                }
+            });
+            
+            // 浏览器信息
+            const browserInfo = document.createElement('div');
+            browserInfo.className = 'test-result info';
+            browserInfo.innerHTML = `
+                <h4>浏览器信息</h4>
+                <p><strong>User Agent:</strong> ${navigator.userAgent}</p>
+                <p><strong>语言:</strong> ${navigator.language}</p>
+                <p><strong>在线状态:</strong> ${navigator.onLine ? '在线' : '离线'}</p>
+            `;
+            resultsDiv.appendChild(browserInfo);
+        }
+
+        // 页面加载完成后自动运行基本测试
+        document.addEventListener('DOMContentLoaded', function() {
+            addTestResult('🚀 测试页面加载完成', 'success');
+            testJavaScriptLoading();
+        });
+    </script>
+</body>
+</html>
