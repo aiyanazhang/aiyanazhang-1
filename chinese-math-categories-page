@@ -1,0 +1,402 @@
+# 中文数学学科分类展示网页 - 设计规范
+
+## 项目概述
+创建一个单文件HTML网页，展示中国数学学科分类体系（8个一级学科，45个二级学科），继承calendar.html和weather.html的架构风格，提供完整的交互功能。
+
+## 架构设计
+
+### 文件结构
+- **文件名**: `math-categories.html`
+- **架构模式**: 单文件HTML（所有CSS和JavaScript内联）
+- **参考文件**: 
+  - `/data/workspace/aiyanazhang-1/calendar.html` - 交互模式和布局参考
+  - `/data/workspace/aiyanazhang-1/weather.html` - 动画和状态管理参考
+
+### 技术栈
+- 纯HTML5 + CSS3 + Vanilla JavaScript (ES6+)
+- 无外部依赖
+- 响应式设计（桌面/平板/移动端）
+
+## 数据结构
+
+### 数学学科分类（标准中国数学分类）
+
+```javascript
+const mathCategories = [
+  {
+    id: 1,
+    name: "基础数学",
+    code: "01",
+    subcategories: [
+      { id: 101, name: "数理逻辑与数学基础", description: "研究数学推理的形式化理论、集合论、证明论等" },
+      { id: 102, name: "数论", description: "研究整数及其性质、素数分布、丢番图方程等" },
+      { id: 103, name: "代数学", description: "研究代数结构，包括群论、环论、域论、线性代数等" },
+      { id: 104, name: "代数几何", description: "用代数方法研究几何对象，联系方程与几何形状" },
+      { id: 105, name: "几何学", description: "研究空间形式与性质，包括欧氏几何、微分几何、拓扑学等" },
+      { id: 106, name: "拓扑学", description: "研究空间在连续变换下的不变性质" },
+      { id: 107, name: "数学分析", description: "研究极限、连续、微积分及其推广理论" },
+      { id: 108, name: "非标准分析", description: "使用无穷小和无穷大的严格理论重构分析学" }
+    ]
+  },
+  {
+    id: 2,
+    name: "计算数学",
+    code: "02",
+    subcategories: [
+      { id: 201, name: "数值代数", description: "研究线性方程组、特征值等问题的数值解法" },
+      { id: 202, name: "数值逼近", description: "研究函数插值、拟合、逼近的数值方法" },
+      { id: 203, name: "微分方程数值解", description: "研究常微分方程和偏微分方程的数值计算方法" },
+      { id: 204, name: "积分方程数值解", description: "研究各类积分方程的数值求解技术" },
+      { id: 205, name: "数值优化", description: "研究优化问题的数值算法，包括线性和非线性规划" },
+      { id: 206, name: "计算几何", description: "研究几何对象和几何问题的算法" }
+    ]
+  },
+  {
+    id: 3,
+    name: "概率论与数理统计",
+    code: "03",
+    subcategories: [
+      { id: 301, name: "几何概率与随机几何", description: "研究几何对象上的概率测度和随机性" },
+      { id: 302, name: "概率论", description: "研究随机现象的数学规律" },
+      { id: 303, name: "数理统计", description: "研究数据收集、分析和推断的数学理论" },
+      { id: 304, name: "应用统计数学", description: "统计方法在实际问题中的应用" },
+      { id: 305, name: "统计质量控制", description: "利用统计方法进行质量管理和过程控制" }
+    ]
+  },
+  {
+    id: 4,
+    name: "应用数学",
+    code: "04",
+    subcategories: [
+      { id: 401, name: "常微分方程", description: "研究含有一个自变量的微分方程理论和应用" },
+      { id: 402, name: "偏微分方程", description: "研究含有多个自变量的微分方程理论和应用" },
+      { id: 403, name: "动力系统", description: "研究系统随时间演化的规律" },
+      { id: 404, name: "积分方程", description: "研究未知函数出现在积分号下的方程" },
+      { id: 405, name: "泛函分析", description: "研究无穷维空间上的函数和算子理论" },
+      { id: 406, name: "计算数学", description: "数值方法和科学计算理论" },
+      { id: 407, name: "应用数学其他学科", description: "其他应用数学分支" }
+    ]
+  },
+  {
+    id: 5,
+    name: "运筹学与控制论",
+    code: "05",
+    subcategories: [
+      { id: 501, name: "运筹学", description: "研究优化决策的数学方法" },
+      { id: 502, name: "数学规划", description: "研究约束优化问题的理论和算法" },
+      { id: 503, name: "组合优化", description: "研究离散对象的优化问题" },
+      { id: 504, name: "图论", description: "研究图及其性质，在网络优化中应用广泛" },
+      { id: 505, name: "对策论", description: "研究多方决策的数学理论（博弈论）" },
+      { id: 506, name: "排队论", description: "研究服务系统中等待现象的数学理论" },
+      { id: 507, name: "库存论", description: "研究库存管理的最优策略" },
+      { id: 508, name: "决策论", description: "研究不确定性下的最优决策理论" },
+      { id: 509, name: "控制论", description: "研究系统控制的一般规律" }
+    ]
+  },
+  {
+    id: 6,
+    name: "数学史",
+    code: "06",
+    subcategories: [
+      { id: 601, name: "中国数学史", description: "研究中国数学发展历史，包括算经、珠算等传统数学" },
+      { id: 602, name: "外国数学史", description: "研究世界各国数学发展历史" }
+    ]
+  },
+  {
+    id: 7,
+    name: "数理逻辑与数学基础",
+    code: "07",
+    subcategories: [
+      { id: 701, name: "演绎逻辑学（亦称符号逻辑学）", description: "研究形式化推理系统和逻辑演算" },
+      { id: 702, name: "证明论", description: "研究数学证明的形式化和性质" },
+      { id: 703, name: "递归论", description: "研究可计算性理论和递归函数" },
+      { id: 704, name: "模型论", description: "研究形式语言和数学结构之间的关系" },
+      { id: 705, name: "公理集合论", description: "研究集合论的公理化系统" },
+      { id: 706, name: "数学基础其他学科", description: "其他数学基础研究领域" }
+    ]
+  },
+  {
+    id: 8,
+    name: "其他数学学科",
+    code: "08",
+    subcategories: [
+      { id: 801, name: "离散数学", description: "研究离散对象，包括组合数学、图论等" },
+      { id: 802, name: "模糊数学", description: "研究模糊性的数学理论" },
+      { id: 803, name: "量子数学", description: "研究量子力学中的数学结构" },
+      { id: 804, name: "应用数学", description: "数学在各领域的应用" }
+    ]
+  }
+];
+```
+
+## 界面设计
+
+### 布局结构
+```
+┌─────────────────────────────────────────┐
+│         顶部标题 + 搜索栏                │
+├─────────────────────────────────────────┤
+│  [筛选按钮] [全部] [基础数学] [计算...] │
+├─────────────────────────────────────────┤
+│                                         │
+│  ┌─── 一级分类卡片 1 ───────┐         │
+│  │  📚 基础数学 (8)      [▼]  │         │
+│  ├─────────────────────────────┤         │
+│  │  二级分类网格：              │         │
+│  │  [数论] [代数学] [几何学]   │         │
+│  │  [拓扑学] [数学分析] ...    │         │
+│  └─────────────────────────────┘         │
+│                                         │
+│  ┌─── 一级分类卡片 2 ───────┐         │
+│  │  💻 计算数学 (6)      [▼]  │         │
+│  │  ...                        │         │
+│  └─────────────────────────────┘         │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### 模态框设计
+```
+┌─────────────────────────────────────┐
+│  数论                          [✕] │
+├─────────────────────────────────────┤
+│                                     │
+│  所属一级学科：基础数学             │
+│  学科代码：01-102                   │
+│                                     │
+│  学科简介：                         │
+│  研究整数及其性质、素数分布、        │
+│  丢番图方程等...                    │
+│                                     │
+│  [关闭]                             │
+└─────────────────────────────────────┘
+```
+
+### 响应式断点
+- **移动端** (< 768px): 单列布局，二级分类单列显示
+- **平板端** (768px - 1024px): 单列布局，二级分类2列网格
+- **桌面端** (> 1024px): 单列布局，二级分类3-4列网格
+
+## 功能实现
+
+### 1. 搜索功能
+```javascript
+function searchCategories(keyword) {
+  // 搜索一级和二级分类名称
+  // 高亮匹配结果
+  // 过滤不匹配的分类
+  // 实时搜索（输入时触发）
+}
+```
+
+**实现要点**:
+- 监听搜索框的 `input` 事件
+- 使用 `toLowerCase()` 进行不区分大小写匹配
+- 匹配到的二级分类所属一级分类也要显示
+- 空搜索时显示全部分类
+
+### 2. 筛选功能
+```javascript
+function filterByCategory(categoryId) {
+  // 按一级分类筛选
+  // 支持"全部"选项
+  // 筛选按钮高亮当前选中项
+}
+```
+
+**实现要点**:
+- 顶部筛选按钮组（全部 + 8个一级分类）
+- 点击筛选按钮切换 `active` 类
+- 使用 `display: none/block` 控制分类卡片显示
+
+### 3. 展开/折叠功能
+```javascript
+function toggleCategory(categoryElement) {
+  // 切换二级分类显示/隐藏
+  // 切换箭头方向 ▼ ▶
+  // 添加展开/折叠动画
+}
+```
+
+**实现要点**:
+- 每个一级分类卡片默认展开
+- 点击卡片头部切换展开状态
+- 使用 CSS transition 实现平滑过渡
+- 箭头图标旋转动画
+
+### 4. 模态框详情
+```javascript
+function showModal(subcategoryData) {
+  // 显示二级分类详细信息
+  // 包含：名称、所属一级学科、代码、描述
+  // 点击遮罩层或关闭按钮关闭
+}
+```
+
+**实现要点**:
+- 点击任意二级分类标签打开模态框
+- 模态框使用 `position: fixed` 居中显示
+- 背景遮罩层半透明黑色
+- 使用 fadeIn 动画（参考 weather.html）
+- ESC键关闭模态框
+
+## CSS设计规范
+
+### 颜色方案（继承自 calendar.html/weather.html）
+```css
+--primary-color: #667eea;
+--secondary-color: #764ba2;
+--gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+--text-dark: #333;
+--text-light: #666;
+--border-color: #ddd;
+--bg-light: #f8f9fa;
+--white: #ffffff;
+--shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+```
+
+### 关键样式类
+```css
+.container { }              /* 主容器 */
+.search-bar { }            /* 搜索栏 */
+.filter-buttons { }        /* 筛选按钮组 */
+.category-card { }         /* 一级分类卡片 */
+.category-header { }       /* 卡片头部 */
+.category-header.collapsed { } /* 折叠状态 */
+.subcategory-grid { }      /* 二级分类网格 */
+.subcategory-tag { }       /* 二级分类标签 */
+.subcategory-tag:hover { } /* 悬停效果 */
+.modal { }                 /* 模态框 */
+.modal-overlay { }         /* 遮罩层 */
+.modal-content { }         /* 模态框内容 */
+```
+
+### 动画效果
+```css
+/* 卡片展开/折叠 */
+@keyframes expand {
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 1000px; opacity: 1; }
+}
+
+/* 模态框淡入 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 标签悬停 */
+.subcategory-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+```
+
+## JavaScript实现要点
+
+### 状态管理
+```javascript
+let currentFilter = 'all';        // 当前筛选分类
+let searchKeyword = '';           // 当前搜索关键词
+let expandedCategories = new Set([1,2,3,4,5,6,7,8]); // 展开的分类ID
+```
+
+### 核心函数
+1. `renderCategories()` - 渲染所有分类卡片
+2. `renderCategoryCard(category)` - 渲染单个一级分类卡片
+3. `handleSearch(keyword)` - 处理搜索
+4. `handleFilter(categoryId)` - 处理筛选
+5. `toggleExpand(categoryId)` - 切换展开/折叠
+6. `showSubcategoryModal(subcategory, parentCategory)` - 显示模态框
+7. `closeModal()` - 关闭模态框
+
+### 事件监听
+```javascript
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+  renderCategories();
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // 搜索框输入
+  searchInput.addEventListener('input', handleSearch);
+  
+  // 筛选按钮点击
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', handleFilter);
+  });
+  
+  // ESC键关闭模态框
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+}
+```
+
+## 关键文件
+
+### 需要创建的文件
+- `/data/workspace/aiyanazhang-1/math-categories.html` - 主文件（唯一文件）
+
+### 参考文件
+- `/data/workspace/aiyanazhang-1/calendar.html` - 交互模式、网格布局、事件处理
+- `/data/workspace/aiyanazhang-1/weather.html` - 动画效果、模态框样式、搜索功能
+
+## 实现步骤
+
+1. **创建HTML基础结构**
+   - 添加 meta 标签（charset, viewport）
+   - 创建主容器结构
+   - 添加搜索栏和筛选按钮
+   - 创建分类卡片容器
+   - 创建模态框HTML
+
+2. **编写CSS样式**
+   - 全局重置样式
+   - 渐变背景和主容器样式
+   - 搜索栏和按钮样式
+   - 分类卡片和网格布局
+   - 二级分类标签样式
+   - 模态框样式
+   - 响应式媒体查询
+   - 动画关键帧
+
+3. **实现JavaScript功能**
+   - 定义数据结构（mathCategories）
+   - 实现渲染函数
+   - 实现搜索功能
+   - 实现筛选功能
+   - 实现展开/折叠功能
+   - 实现模态框功能
+   - 添加事件监听器
+
+4. **测试和优化**
+   - 测试搜索功能（中文输入、拼音）
+   - 测试筛选切换
+   - 测试展开/折叠动画
+   - 测试模态框打开/关闭
+   - 测试响应式布局（移动端/平板/桌面）
+   - 测试键盘交互（Enter搜索、ESC关闭）
+
+## 技术难点和解决方案
+
+### 难点1: 中文搜索
+**解决方案**: 使用 `String.prototype.includes()` 进行子串匹配，支持中文全文搜索
+
+### 难点2: 筛选和搜索同时生效
+**解决方案**: 在渲染时同时检查筛选条件和搜索关键词，两者需同时满足才显示
+
+### 难点3: 展开/折叠动画流畅性
+**解决方案**: 使用 `max-height` 过渡而非 `height`，设置足够大的 max-height 值
+
+### 难点4: 模态框滚动穿透
+**解决方案**: 模态框打开时，给 body 添加 `overflow: hidden`；关闭时移除
+
+## 预期效果
+
+- **文件大小**: 约 15-20KB（单文件包含所有内容）
+- **加载速度**: 瞬时加载（无外部依赖）
+- **浏览器兼容**: Chrome 60+, Firefox 60+, Safari 12+, Edge 79+
+- **性能**: 流畅的动画和交互（60fps）
+- **可访问性**: 支持键盘导航，语义化HTML结构
