@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🪙 Today's Gold Price / 今日金价</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+
+        .current-time {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .refresh-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .refresh-btn.rotating {
+            animation: rotate 1s linear;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state,
+        .error-state,
+        .success-state {
+            display: none;
+        }
+
+        .loading-state.show,
+        .error-state.show,
+        .success-state.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #DAA520;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+
+        .retry-btn {
+            padding: 12px 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .cache-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .primary-price {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .price-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .price-value {
+            font-size: 60px;
+            color: #DAA520;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .price-unit {
+            font-size: 18px;
+            color: #999;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .detail-item {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .update-info {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .update-time,
+        .next-update {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .price-value {
+                font-size: 48px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🪙 Today's Gold Price / 今日金价</h1>
+            <div class="header-controls">
+                <div class="current-time" id="currentTime"></div>
+                <button class="refresh-btn" id="refreshBtn" onclick="handleRefresh()">
+                    🔄 Refresh / 刷新
+                </button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading-state">
+            <div class="spinner"></div>
+            <div class="loading-message">
+                Loading gold price data... / 正在加载金价数据...
+            </div>
+        </div>
+
+        <div id="errorState" class="error-state">
+            <div class="error-message" id="errorMessage">
+                Failed to fetch gold price / 获取金价失败
+            </div>
+            <button class="retry-btn" onclick="handleRefresh()">
+                Retry / 重试
+            </button>
+        </div>
+
+        <div id="successState" class="success-state">
+            <div id="cacheWarning" class="cache-warning" style="display: none;">
+                ⚠️ Using cached data (API unavailable) / 使用缓存数据（API不可用）
+            </div>
+
+            <div class="primary-price">
+                <div class="price-label">Current Price / 当前价格</div>
+                <div class="price-value" id="priceUsdOz">$0.00</div>
+                <div class="price-unit">per troy oz / 每金衡盎司</div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-label">CNY per oz / 人民币/盎司</div>
+                    <div class="detail-value" id="priceCnyOz">¥0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">USD per gram / 美元/克</div>
+                    <div class="detail-value" id="priceUsdGram">$0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">CNY per gram / 人民币/克</div>
+                    <div class="detail-value" id="priceCnyGram">¥0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">CNY per kg / 人民币/千克</div>
+                    <div class="detail-value" id="priceCnyKg">¥0.00</div>
+                </div>
+            </div>
+
+            <div class="update-info">
+                <div class="update-time" id="updateTime">
+                    Last Updated / 最后更新: --
+                </div>
+                <div class="next-update" id="nextUpdate">
+                    Next Update / 下次更新: --
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Data source: gold-api.com / 数据来源: gold-api.com<br>
+            Exchange rates are approximate / 汇率为近似值
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            API_URL: 'https://api.gold-api.com/price/XAU',
+            REFRESH_INTERVAL: 300000,
+            CACHE_EXPIRY: 600000,
+            USD_TO_CNY: 7.2,
+            TROY_OZ_TO_GRAM: 31.1035,
+            REQUEST_TIMEOUT: 10000,
+            MAX_RETRIES: 3,
+            CACHE_KEY: 'gold_price_cache'
+        };
+
+        let autoRefreshInterval = null;
+        let countdownInterval = null;
+        let nextRefreshTime = null;
+        let isRefreshing = false;
+
+        async function fetchWithTimeout(url, timeout = CONFIG.REQUEST_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
+            }
+        }
+
+        async function fetchGoldPrice(retryCount = 0) {
+            try {
+                console.log(`Fetching gold price (attempt ${retryCount + 1}/${CONFIG.MAX_RETRIES})`);
+                
+                const response = await fetchWithTimeout(CONFIG.API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.price || typeof data.price !== 'number' || data.price <= 0) {
+                    throw new Error('Invalid price data received');
+                }
+                
+                console.log('Gold price fetched successfully:', data);
+                return data;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                
+                if (retryCount < CONFIG.MAX_RETRIES - 1) {
+                    const delay = Math.pow(2, retryCount) * 1000;
+                    console.log(`Retrying in ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchGoldPrice(retryCount + 1);
+                }
+                
+                throw error;
+            }
+        }
+
+        function processGoldData(apiResponse) {
+            const usdPerOz = apiResponse.price;
+            const cnyPerOz = usdPerOz * CONFIG.USD_TO_CNY;
+            const usdPerGram = usdPerOz / CONFIG.TROY_OZ_TO_GRAM;
+            const cnyPerGram = usdPerGram * CONFIG.USD_TO_CNY;
+            const cnyPerKg = cnyPerGram * 1000;
+            
+            const updatedAt = new Date(apiResponse.updatedAt);
+            const beijingTime = new Date(updatedAt.getTime() + (8 * 60 * 60 * 1000));
+            
+            return {
+                usdPerOz: formatPrice(usdPerOz, '$'),
+                cnyPerOz: formatPrice(cnyPerOz, '¥'),
+                usdPerGram: formatPrice(usdPerGram, '$'),
+                cnyPerGram: formatPrice(cnyPerGram, '¥'),
+                cnyPerKg: formatPrice(cnyPerKg, '¥', 0),
+                updateTime: formatDateTime(beijingTime),
+                timestamp: Date.now()
+            };
+        }
+
+        function formatPrice(value, symbol, decimals = 2) {
+            const formatted = value.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return `${symbol}${formatted}`;
+        }
+
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function updateUI(goldData, isFromCache = false) {
+            document.getElementById('priceUsdOz').textContent = goldData.usdPerOz;
+            document.getElementById('priceCnyOz').textContent = goldData.cnyPerOz;
+            document.getElementById('priceUsdGram').textContent = goldData.usdPerGram;
+            document.getElementById('priceCnyGram').textContent = goldData.cnyPerGram;
+            document.getElementById('priceCnyKg').textContent = goldData.cnyPerKg;
+            document.getElementById('updateTime').textContent = 
+                `Last Updated / 最后更新: ${goldData.updateTime}`;
+            
+            const cacheWarning = document.getElementById('cacheWarning');
+            cacheWarning.style.display = isFromCache ? 'block' : 'none';
+            
+            showState('success');
+        }
+
+        function showLoading() {
+            showState('loading');
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            showState('error');
+        }
+
+        function showState(state) {
+            document.getElementById('loadingState').classList.remove('show');
+            document.getElementById('errorState').classList.remove('show');
+            document.getElementById('successState').classList.remove('show');
+            
+            if (state === 'loading') {
+                document.getElementById('loadingState').classList.add('show');
+            } else if (state === 'error') {
+                document.getElementById('errorState').classList.add('show');
+            } else if (state === 'success') {
+                document.getElementById('successState').classList.add('show');
+            }
+        }
+
+        function saveToCache(data) {
+            try {
+                localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(data));
+                console.log('Data cached successfully');
+            } catch (error) {
+                console.warn('Failed to cache data:', error);
+            }
+        }
+
+        function getFromCache() {
+            try {
+                const cached = localStorage.getItem(CONFIG.CACHE_KEY);
+                if (!cached) return null;
+                
+                const data = JSON.parse(cached);
+                const age = Date.now() - data.timestamp;
+                
+                if (age > CONFIG.CACHE_EXPIRY) {
+                    console.log('Cache expired');
+                    return null;
+                }
+                
+                console.log('Using cached data');
+                return data;
+            } catch (error) {
+                console.warn('Failed to retrieve cache:', error);
+                return null;
+            }
+        }
+
+        async function loadGoldPrice() {
+            if (isRefreshing) return;
+            
+            isRefreshing = true;
+            showLoading();
+            
+            try {
+                const apiData = await fetchGoldPrice();
+                const goldData = processGoldData(apiData);
+                saveToCache(goldData);
+                updateUI(goldData, false);
+                startCountdown();
+            } catch (error) {
+                console.error('Failed to load gold price:', error);
+                
+                const cachedData = getFromCache();
+                if (cachedData) {
+                    updateUI(cachedData, true);
+                    startCountdown();
+                } else {
+                    showError('Failed to fetch gold price / 获取金价失败');
+                }
+            } finally {
+                isRefreshing = false;
+            }
+        }
+
+        function handleRefresh() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('rotating');
+            setTimeout(() => btn.classList.remove('rotating'), 1000);
+            
+            loadGoldPrice();
+        }
+
+        function startAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            autoRefreshInterval = setInterval(() => {
+                console.log('Auto-refreshing...');
+                loadGoldPrice();
+            }, CONFIG.REFRESH_INTERVAL);
+        }
+
+        function startCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            nextRefreshTime = Date.now() + CONFIG.REFRESH_INTERVAL;
+            
+            countdownInterval = setInterval(() => {
+                const remaining = nextRefreshTime - Date.now();
+                
+                if (remaining <= 0) {
+                    document.getElementById('nextUpdate').textContent = 
+                        'Next Update / 下次更新: Updating...';
+                    return;
+                }
+                
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                
+                document.getElementById('nextUpdate').textContent = 
+                    `Next Update / 下次更新: in ${minutes}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function updateCurrentTime() {
+            setInterval(() => {
+                const now = new Date();
+                const timeStr = formatDateTime(now);
+                document.getElementById('currentTime').textContent = timeStr;
+            }, 1000);
+        }
+
+        window.addEventListener('load', () => {
+            console.log('Page loaded, initializing...');
+            updateCurrentTime();
+            loadGoldPrice();
+            startAutoRefresh();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+        });
+    </script>
+</body>
+</html>
