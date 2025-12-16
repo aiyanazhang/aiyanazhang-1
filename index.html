@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的工具箱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF69B4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .tool-title {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .coming-soon::after {
+            content: "即将推出";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ffd700;
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .category-title {
+                font-size: 1.4em;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ 我的工具箱</h1>
+            <p class="subtitle">实用工具集合，让生活更便捷</p>
+        </header>
+
+        <div class="category">
+            <h2 class="category-title">📊 金融工具</h2>
+            <div class="tools-grid">
+                <a href="tools/finance/gold-price.html" class="tool-card">
+                    <span class="tool-icon">🪙</span>
+                    <div class="tool-title">今日金价</div>
+                    <p class="tool-description">实时查看黄金价格，支持多种货币和单位，自动刷新数据</p>
+                </a>
+                
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">💹</span>
+                    <div class="tool-title">汇率换算</div>
+                    <p class="tool-description">实时汇率查询与换算，支持多种主流货币</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">📈</span>
+                    <div class="tool-title">股票行情</div>
+                    <p class="tool-description">查看实时股票行情和财经数据</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2 class="category-title">💻 开发工具</h2>
+            <div class="tools-grid">
+                <a href="tools/dev/js-features.html" class="tool-card">
+                    <span class="tool-icon">⚡</span>
+                    <div class="tool-title">JavaScript 特性展示</div>
+                    <p class="tool-description">交互式学习和演示 JavaScript 的各种核心特性</p>
+                </a>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">🎨</span>
+                    <div class="tool-title">颜色转换器</div>
+                    <p class="tool-description">RGB、HEX、HSL 等颜色格式互转工具</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">🔐</span>
+                    <div class="tool-title">加密解密</div>
+                    <p class="tool-description">Base64、MD5、SHA 等常用加密解密工具</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2 class="category-title">📝 文本工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">📋</span>
+                    <div class="tool-title">文本对比</div>
+                    <p class="tool-description">对比两段文本的差异，高亮显示不同之处</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">🔤</span>
+                    <div class="tool-title">大小写转换</div>
+                    <p class="tool-description">快速转换文本大小写格式</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">📊</span>
+                    <div class="tool-title">字数统计</div>
+                    <p class="tool-description">统计文本字数、词数、字符数等信息</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2 class="category-title">🎯 生活工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">⏱️</span>
+                    <div class="tool-title">番茄钟</div>
+                    <p class="tool-description">专注工作计时器，提高工作效率</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">🗓️</span>
+                    <div class="tool-title">日期计算</div>
+                    <p class="tool-description">计算日期间隔、工作日等日期相关信息</p>
+                </div>
+
+                <div class="tool-card coming-soon">
+                    <span class="tool-icon">🎲</span>
+                    <div class="tool-title">随机数生成</div>
+                    <p class="tool-description">生成随机数、随机字符串等</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>更多工具正在开发中... 敬请期待</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">© 2025 我的工具箱</p>
+        </footer>
+    </div>
+</body>
+</html>
