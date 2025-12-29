@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 2026年法定节假日</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 15px 30px;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-icon {
+            font-size: 20px;
+        }
+
+        .navbar-text {
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .holiday-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .holiday-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .holiday-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .holiday-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .holiday-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .holiday-icon {
+            font-size: 28px;
+        }
+
+        .holiday-days {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .holiday-dates {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .date-range {
+            background: #f0f0f0;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-text {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .date-type {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .work-label {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .rest-label {
+            background: #51cf66;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .note-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .holiday-name {
+                font-size: 20px;
+            }
+
+            .date-range {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">
+                <span class="navbar-icon">🏠</span>
+                <span class="navbar-text">返回工具箱</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📅 2026年中国法定节假日</h1>
+            <p class="subtitle">包含放假安排和调休信息</p>
+        </div>
+
+        <div class="summary">
+            <div class="summary-title">📊 2026年假期统计</div>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">法定节假日</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalDays">29</div>
+                    <div class="stat-label">总放假天数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="workDays">6</div>
+                    <div class="stat-label">需调休天数</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="holiday-grid" id="holidayGrid"></div>
+
+        <div class="note">
+            <div class="note-title">📝 说明：</div>
+            <div>1. 以上数据为预测性参考，实际放假安排以国务院办公厅正式通知为准</div>
+            <div>2. 调休日期可能会根据实际情况进行调整</div>
+            <div>3. 建议关注官方发布的最新假期安排通知</div>
+        </div>
+    </div>
+
+    <script>
+        const holidays2026 = [
+            {
+                name: '元旦',
+                icon: '🎆',
+                days: 3,
+                arrangements: [
+                    { dates: '1月1日-3日', type: 'rest', label: '放假' }
+                ]
+            },
+            {
+                name: '春节',
+                icon: '🧨',
+                days: 8,
+                arrangements: [
+                    { dates: '1月24日（周六）', type: 'work', label: '补班' },
+                    { dates: '1月28日-2月3日', type: 'rest', label: '放假' },
+                    { dates: '1月28日（除夕）-2月3日（初六）', type: 'rest', label: '共8天' },
+                    { dates: '2月4日（周三）', type: 'work', label: '补班' }
+                ]
+            },
+            {
+                name: '清明节',
+                icon: '🌸',
+                days: 3,
+                arrangements: [
+                    { dates: '4月4日-6日', type: 'rest', label: '放假' }
+                ]
+            },
+            {
+                name: '劳动节',
+                icon: '⚒️',
+                days: 5,
+                arrangements: [
+                    { dates: '4月26日（周日）', type: 'work', label: '补班' },
+                    { dates: '5月1日-5日', type: 'rest', label: '放假' },
+                    { dates: '5月9日（周六）', type: 'work', label: '补班' }
+                ]
+            },
+            {
+                name: '端午节',
+                icon: '🚣',
+                days: 3,
+                arrangements: [
+                    { dates: '6月25日-27日', type: 'rest', label: '放假' },
+                    { dates: '6月28日（周日）', type: 'work', label: '补班' }
+                ]
+            },
+            {
+                name: '中秋节',
+                icon: '🥮',
+                days: 3,
+                arrangements: [
+                    { dates: '10月3日-5日', type: 'rest', label: '放假' }
+                ]
+            },
+            {
+                name: '国庆节',
+                icon: '🇨🇳',
+                days: 4,
+                arrangements: [
+                    { dates: '9月27日（周日）', type: 'work', label: '补班' },
+                    { dates: '10月1日-4日', type: 'rest', label: '放假' },
+                    { dates: '10月10日（周六）', type: 'work', label: '补班' }
+                ]
+            }
+        ];
+
+        function renderHolidays() {
+            const grid = document.getElementById('holidayGrid');
+            grid.innerHTML = '';
+
+            holidays2026.forEach(holiday => {
+                const card = document.createElement('div');
+                card.className = 'holiday-card';
+
+                const arrangementsHTML = holiday.arrangements.map(arr => `
+                    <div class="date-range">
+                        <div>
+                            <div class="date-text">${arr.dates}</div>
+                            <div class="date-type">${arr.type === 'rest' ? '休息日' : '工作日'}</div>
+                        </div>
+                        <span class="${arr.type === 'work' ? 'work-label' : 'rest-label'}">${arr.label}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="holiday-header">
+                        <div class="holiday-name">
+                            <span class="holiday-icon">${holiday.icon}</span>
+                            <span>${holiday.name}</span>
+                        </div>
+                        <div class="holiday-days">${holiday.days}天</div>
+                    </div>
+                    <div class="holiday-dates">
+                        ${arrangementsHTML}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function calculateStats() {
+            let totalDays = 0;
+            let workDays = 0;
+
+            holidays2026.forEach(holiday => {
+                totalDays += holiday.days;
+                holiday.arrangements.forEach(arr => {
+                    if (arr.type === 'work') {
+                        workDays++;
+                    }
+                });
+            });
+
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('workDays').textContent = workDays;
+        }
+
+        renderHolidays();
+        calculateStats();
+    </script>
+</body>
+</html>

@@ -44,8 +44,55 @@
             opacity: 0.9;
         }
 
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+
         .category {
-            margin-bottom: 40px;
+            display: none;
+        }
+
+        .category.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .category-title {
@@ -54,6 +101,7 @@
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid rgba(255,255,255,0.3);
+            text-align: center;
         }
 
         .tools-grid {
@@ -137,6 +185,11 @@
             .tools-grid {
                 grid-template-columns: 1fr;
             }
+
+            .tab-btn {
+                font-size: 0.95em;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -147,7 +200,14 @@
             <p class="subtitle">实用工具集合，让生活更便捷</p>
         </header>
 
-        <div class="category">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="finance">📊 金融工具</button>
+            <button class="tab-btn" data-tab="dev">💻 开发工具</button>
+            <button class="tab-btn" data-tab="text">📝 文本工具</button>
+            <button class="tab-btn" data-tab="life">🎯 生活工具</button>
+        </div>
+
+        <div id="finance" class="category active">
             <h2 class="category-title">📊 金融工具</h2>
             <div class="tools-grid">
                 <a href="tools/finance/gold-price.html" class="tool-card">
@@ -170,7 +230,7 @@
             </div>
         </div>
 
-        <div class="category">
+        <div id="dev" class="category">
             <h2 class="category-title">💻 开发工具</h2>
             <div class="tools-grid">
                 <a href="tools/dev/js-features.html" class="tool-card">
@@ -193,7 +253,7 @@
             </div>
         </div>
 
-        <div class="category">
+        <div id="text" class="category">
             <h2 class="category-title">📝 文本工具</h2>
             <div class="tools-grid">
                 <div class="tool-card coming-soon">
@@ -216,7 +276,7 @@
             </div>
         </div>
 
-        <div class="category">
+        <div id="life" class="category">
             <h2 class="category-title">🎯 生活工具</h2>
             <div class="tools-grid">
                 <div class="tool-card coming-soon">
@@ -244,5 +304,26 @@
             <p style="margin-top: 10px; font-size: 0.9em;">© 2025 我的工具箱</p>
         </footer>
     </div>
+
+    <script>
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const categories = document.querySelectorAll('.category');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+                
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                categories.forEach(cat => {
+                    cat.classList.remove('active');
+                    if (cat.id === targetTab) {
+                        cat.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

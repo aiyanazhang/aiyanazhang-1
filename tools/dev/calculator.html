@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 15px 30px;
+        }
+
+        .navbar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-icon {
+            font-size: 20px;
+        }
+
+        .navbar-text {
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .calculator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .display {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .expression {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 8px;
+            min-height: 24px;
+            word-break: break-all;
+        }
+
+        .result {
+            color: #fff;
+            font-size: 36px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-number {
+            background: #fff;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-number:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-operator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-operator:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-function {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-function:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-equals {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-equals:hover {
+            box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            box-shadow: 0 5px 20px rgba(244, 92, 67, 0.4);
+        }
+
+        .history-section {
+            margin-top: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .history-title {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .clear-history {
+            font-size: 12px;
+            color: #667eea;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #f0f0f0;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-expr {
+            color: #999;
+        }
+
+        .history-result {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .btn {
+                padding: 15px;
+                font-size: 18px;
+            }
+
+            .result {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">
+                <span class="navbar-icon">🏠</span>
+                <span class="navbar-text">返回工具箱</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🧮 计算器</h1>
+            <p class="subtitle">简单易用的在线计算器</p>
+        </div>
+
+        <div class="calculator">
+            <div class="display">
+                <div class="expression" id="expression"></div>
+                <div class="result" id="result">0</div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-clear" onclick="clearAll()">C</button>
+                <button class="btn btn-function" onclick="backspace()">⌫</button>
+                <button class="btn btn-function" onclick="inputOperator('%')">%</button>
+                <button class="btn btn-operator" onclick="inputOperator('/')">÷</button>
+
+                <button class="btn btn-number" onclick="inputNumber('7')">7</button>
+                <button class="btn btn-number" onclick="inputNumber('8')">8</button>
+                <button class="btn btn-number" onclick="inputNumber('9')">9</button>
+                <button class="btn btn-operator" onclick="inputOperator('*')">×</button>
+
+                <button class="btn btn-number" onclick="inputNumber('4')">4</button>
+                <button class="btn btn-number" onclick="inputNumber('5')">5</button>
+                <button class="btn btn-number" onclick="inputNumber('6')">6</button>
+                <button class="btn btn-operator" onclick="inputOperator('-')">−</button>
+
+                <button class="btn btn-number" onclick="inputNumber('1')">1</button>
+                <button class="btn btn-number" onclick="inputNumber('2')">2</button>
+                <button class="btn btn-number" onclick="inputNumber('3')">3</button>
+                <button class="btn btn-operator" onclick="inputOperator('+')">+</button>
+
+                <button class="btn btn-number" onclick="inputNumber('0')">0</button>
+                <button class="btn btn-number" onclick="inputDecimal()">.</button>
+                <button class="btn btn-equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-title">
+                📝 计算历史
+                <span class="clear-history" onclick="clearHistory()">清空</span>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-history">暂无计算历史</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentNumber = '0';
+        let previousNumber = '';
+        let operator = '';
+        let shouldResetDisplay = false;
+        let history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+
+        function updateDisplay() {
+            document.getElementById('result').textContent = currentNumber;
+            let expr = '';
+            if (previousNumber && operator) {
+                const opSymbol = { '+': '+', '-': '−', '*': '×', '/': '÷', '%': '%' };
+                expr = previousNumber + ' ' + (opSymbol[operator] || operator);
+            }
+            document.getElementById('expression').textContent = expr;
+        }
+
+        function inputNumber(num) {
+            if (shouldResetDisplay) {
+                currentNumber = num;
+                shouldResetDisplay = false;
+            } else {
+                if (currentNumber === '0' && num !== '0') {
+                    currentNumber = num;
+                } else if (currentNumber !== '0') {
+                    currentNumber += num;
+                }
+            }
+            updateDisplay();
+        }
+
+        function inputDecimal() {
+            if (shouldResetDisplay) {
+                currentNumber = '0.';
+                shouldResetDisplay = false;
+            } else if (!currentNumber.includes('.')) {
+                currentNumber += '.';
+            }
+            updateDisplay();
+        }
+
+        function inputOperator(op) {
+            if (previousNumber && operator && !shouldResetDisplay) {
+                calculate(false);
+            }
+            previousNumber = currentNumber;
+            operator = op;
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function calculate(addToHistory = true) {
+            if (!previousNumber || !operator) return;
+
+            const prev = parseFloat(previousNumber);
+            const curr = parseFloat(currentNumber);
+            let result;
+
+            switch (operator) {
+                case '+':
+                    result = prev + curr;
+                    break;
+                case '-':
+                    result = prev - curr;
+                    break;
+                case '*':
+                    result = prev * curr;
+                    break;
+                case '/':
+                    if (curr === 0) {
+                        result = '错误';
+                    } else {
+                        result = prev / curr;
+                    }
+                    break;
+                case '%':
+                    result = prev % curr;
+                    break;
+                default:
+                    return;
+            }
+
+            const opSymbol = { '+': '+', '-': '−', '*': '×', '/': '÷', '%': '%' };
+            const expression = `${previousNumber} ${opSymbol[operator]} ${currentNumber}`;
+
+            if (typeof result === 'number') {
+                result = Math.round(result * 1000000000) / 1000000000;
+                result = result.toString();
+            }
+
+            if (addToHistory && result !== '错误') {
+                addHistoryItem(expression, result);
+            }
+
+            currentNumber = result;
+            previousNumber = '';
+            operator = '';
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            currentNumber = '0';
+            previousNumber = '';
+            operator = '';
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function backspace() {
+            if (shouldResetDisplay) {
+                clearAll();
+                return;
+            }
+            if (currentNumber.length > 1) {
+                currentNumber = currentNumber.slice(0, -1);
+            } else {
+                currentNumber = '0';
+            }
+            updateDisplay();
+        }
+
+        function addHistoryItem(expression, result) {
+            history.unshift({ expression, result });
+            if (history.length > 10) {
+                history.pop();
+            }
+            localStorage.setItem('calcHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (history.length === 0) {
+                container.innerHTML = '<div class="empty-history">暂无计算历史</div>';
+                return;
+            }
+            container.innerHTML = history.map((item, index) => `
+                <div class="history-item" onclick="loadHistory(${index})">
+                    <span class="history-expr">${item.expression} =</span>
+                    <span class="history-result">${item.result}</span>
+                </div>
+            `).join('');
+        }
+
+        function loadHistory(index) {
+            currentNumber = history[index].result;
+            previousNumber = '';
+            operator = '';
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('calcHistory');
+            renderHistory();
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                inputNumber(e.key);
+            } else if (e.key === '.') {
+                inputDecimal();
+            } else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+                inputOperator(e.key);
+            } else if (e.key === '%') {
+                inputOperator('%');
+            } else if (e.key === 'Enter' || e.key === '=') {
+                calculate();
+            } else if (e.key === 'Backspace') {
+                backspace();
+            } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                clearAll();
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+        renderHistory();
+    </script>
+</body>
+</html>

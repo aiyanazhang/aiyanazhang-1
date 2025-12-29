@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 万年历</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 15px 30px;
+        }
+
+        .navbar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-icon {
+            font-size: 20px;
+        }
+
+        .navbar-text {
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .current-month {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .today-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .today-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weekday {
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            color: #667eea;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border-radius: 12px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .day-number {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .day-lunar {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .day.other-month {
+            opacity: 0.3;
+        }
+
+        .day.today {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .day.today .day-number {
+            color: white;
+        }
+
+        .day.today .day-lunar {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .day.selected {
+            border-color: #11998e;
+            background: #e8f8f5;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .info-title {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .info-content {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #999;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .calendar-grid {
+                gap: 5px;
+            }
+
+            .day {
+                padding: 5px;
+            }
+
+            .day-number {
+                font-size: 14px;
+            }
+
+            .day-lunar {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">
+                <span class="navbar-icon">🏠</span>
+                <span class="navbar-text">返回工具箱</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📅 万年历</h1>
+            <p class="subtitle">查看公历、农历及节气信息</p>
+        </div>
+
+        <div class="calendar-header">
+            <button class="nav-btn" onclick="previousMonth()">◀ 上月</button>
+            <div style="text-align: center;">
+                <div class="current-month" id="currentMonth"></div>
+                <button class="today-btn" onclick="goToToday()">今天</button>
+            </div>
+            <button class="nav-btn" onclick="nextMonth()">下月 ▶</button>
+        </div>
+
+        <div class="calendar-grid">
+            <div class="weekday">日</div>
+            <div class="weekday">一</div>
+            <div class="weekday">二</div>
+            <div class="weekday">三</div>
+            <div class="weekday">四</div>
+            <div class="weekday">五</div>
+            <div class="weekday">六</div>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+        <div class="info-section">
+            <div class="info-title">📝 日期详情</div>
+            <div class="info-content" id="dateInfo">
+                <div class="info-item">
+                    <span class="info-label">请选择日期查看详情</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const lunarInfo = [0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
+            0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
+            0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
+            0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
+            0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
+            0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5d0, 0x14573, 0x052d0, 0x0a9a8, 0x0e950, 0x06aa0,
+            0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
+            0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0, 0x195a6,
+            0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
+            0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0,
+            0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
+            0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
+            0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
+            0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
+            0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0];
+
+        const Animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+        const lunarMonths = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
+        const lunarDays = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
+            "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
+            "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
+
+        const solarTerms = ["小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
+            "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"];
+
+        const festivals = {
+            '1-1': '元旦',
+            '2-14': '情人节',
+            '3-8': '妇女节',
+            '5-1': '劳动节',
+            '6-1': '儿童节',
+            '10-1': '国庆节',
+            '12-25': '圣诞节'
+        };
+
+        const lunarFestivals = {
+            '1-1': '春节',
+            '1-15': '元宵节',
+            '5-5': '端午节',
+            '7-7': '七夕节',
+            '8-15': '中秋节',
+            '9-9': '重阳节',
+            '12-8': '腊八节',
+            '12-30': '除夕'
+        };
+
+        let currentDate = new Date();
+        let selectedDate = null;
+
+        function lYearDays(y) {
+            let sum = 348;
+            for (let i = 0x8000; i > 0x8; i >>= 1) {
+                sum += (lunarInfo[y - 1900] & i) ? 1 : 0;
+            }
+            return sum + leapDays(y);
+        }
+
+        function leapDays(y) {
+            if (leapMonth(y)) {
+                return (lunarInfo[y - 1900] & 0x10000) ? 30 : 29;
+            }
+            return 0;
+        }
+
+        function leapMonth(y) {
+            return lunarInfo[y - 1900] & 0xf;
+        }
+
+        function monthDays(y, m) {
+            return (lunarInfo[y - 1900] & (0x10000 >> m)) ? 30 : 29;
+        }
+
+        function solarToLunar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            let offset = Math.floor((Date.UTC(year, month - 1, day) - Date.UTC(1900, 0, 31)) / 86400000);
+            let temp = 0;
+            let i;
+
+            for (i = 1900; i < 2100 && offset > 0; i++) {
+                temp = lYearDays(i);
+                offset -= temp;
+            }
+
+            if (offset < 0) {
+                offset += temp;
+                i--;
+            }
+
+            const lunarYear = i;
+            const leap = leapMonth(i);
+            let isLeap = false;
+
+            for (i = 1; i < 13 && offset > 0; i++) {
+                if (leap > 0 && i === (leap + 1) && !isLeap) {
+                    --i;
+                    isLeap = true;
+                    temp = leapDays(lunarYear);
+                } else {
+                    temp = monthDays(lunarYear, i);
+                }
+
+                if (isLeap && i === (leap + 1)) {
+                    isLeap = false;
+                }
+
+                offset -= temp;
+            }
+
+            if (offset === 0 && leap > 0 && i === leap + 1) {
+                if (isLeap) {
+                    isLeap = false;
+                } else {
+                    isLeap = true;
+                    --i;
+                }
+            }
+
+            if (offset < 0) {
+                offset += temp;
+                --i;
+            }
+
+            return {
+                year: lunarYear,
+                month: i,
+                day: offset + 1,
+                isLeap: isLeap,
+                yearCyl: lunarYear - 1864,
+                animal: Animals[(lunarYear - 1900) % 12]
+            };
+        }
+
+        function getLunarDateString(lunar) {
+            const monthStr = (lunar.isLeap ? '闰' : '') + lunarMonths[lunar.month - 1] + '月';
+            const dayStr = lunarDays[lunar.day - 1];
+            return lunar.day === 1 ? monthStr : dayStr;
+        }
+
+        function getFestival(date, lunar) {
+            const solarKey = `${date.getMonth() + 1}-${date.getDate()}`;
+            const lunarKey = `${lunar.month}-${lunar.day}`;
+            return festivals[solarKey] || lunarFestivals[lunarKey] || '';
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonth').textContent = `${year}年${month + 1}月`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const prevLastDay = new Date(year, month, 0);
+            
+            const firstDayOfWeek = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            const prevDaysInMonth = prevLastDay.getDate();
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = prevDaysInMonth - i;
+                const date = new Date(year, month - 1, day);
+                const dayEl = createDayElement(date, true);
+                grid.appendChild(dayEl);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayEl = createDayElement(date, false);
+                
+                if (date.getTime() === today.getTime()) {
+                    dayEl.classList.add('today');
+                }
+                
+                grid.appendChild(dayEl);
+            }
+            
+            const remainingDays = 42 - grid.children.length;
+            for (let day = 1; day <= remainingDays; day++) {
+                const date = new Date(year, month + 1, day);
+                const dayEl = createDayElement(date, true);
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function createDayElement(date, isOtherMonth) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'day';
+            if (isOtherMonth) {
+                dayEl.classList.add('other-month');
+            }
+            
+            const lunar = solarToLunar(date);
+            const festival = getFestival(date, lunar);
+            
+            dayEl.innerHTML = `
+                <div class="day-number">${date.getDate()}</div>
+                <div class="day-lunar">${festival || getLunarDateString(lunar)}</div>
+            `;
+            
+            dayEl.onclick = () => selectDate(date, dayEl);
+            
+            return dayEl;
+        }
+
+        function selectDate(date, element) {
+            document.querySelectorAll('.day').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedDate = date;
+            showDateInfo(date);
+        }
+
+        function showDateInfo(date) {
+            const lunar = solarToLunar(date);
+            const festival = getFestival(date, lunar);
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            
+            const info = `
+                <div class="info-item">
+                    <span class="info-label">公历</span>
+                    <span class="info-value">${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">星期</span>
+                    <span class="info-value">${weekDays[date.getDay()]}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">农历</span>
+                    <span class="info-value">${lunar.year}年${(lunar.isLeap ? '闰' : '') + lunarMonths[lunar.month - 1]}月${lunarDays[lunar.day - 1]}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">生肖</span>
+                    <span class="info-value">${lunar.animal}年</span>
+                </div>
+                ${festival ? `<div class="info-item">
+                    <span class="info-label">节日</span>
+                    <span class="info-value">${festival}</span>
+                </div>` : ''}
+            `;
+            
+            document.getElementById('dateInfo').innerHTML = info;
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        renderCalendar();
+    </script>
+</body>
+</html>

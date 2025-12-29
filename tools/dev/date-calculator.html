@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗓️ 日期计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 15px 30px;
+        }
+
+        .navbar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-icon {
+            font-size: 20px;
+        }
+
+        .navbar-text {
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .calc-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        input[type="date"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .result-title {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .result-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .result-single {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .result-single .result-value {
+            font-size: 28px;
+        }
+
+        .weekday-info {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .weekday-tag {
+            padding: 5px 15px;
+            background: #e8e8e8;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .weekday-tag.weekend {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .today-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .today-date {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .today-weekday {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .tabs {
+                justify-content: center;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">
+                <span class="navbar-icon">🏠</span>
+                <span class="navbar-text">返回工具箱</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🗓️ 日期计算器</h1>
+            <p class="subtitle">计算日期间隔、推算日期、查询工作日</p>
+        </div>
+
+        <div class="today-info">
+            <div class="today-date" id="todayDate"></div>
+            <div class="today-weekday" id="todayWeekday"></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="interval">📏 日期间隔</button>
+            <button class="tab-btn" data-tab="add">➕ 日期推算</button>
+            <button class="tab-btn" data-tab="workdays">💼 工作日计算</button>
+        </div>
+
+        <div id="interval" class="tab-content active">
+            <div class="calc-section">
+                <div class="section-title">📅 计算两个日期之间的间隔</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>开始日期</label>
+                        <input type="date" id="startDate1">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期</label>
+                        <input type="date" id="endDate1">
+                    </div>
+                    <button class="btn btn-primary" onclick="calcInterval()">计算</button>
+                </div>
+            </div>
+            <div id="intervalResult" class="result-box" style="display: none;">
+                <div class="result-title">📊 计算结果</div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-value" id="totalDays">0</div>
+                        <div class="result-label">总天数</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="totalWeeks">0</div>
+                        <div class="result-label">总周数</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="totalMonths">0</div>
+                        <div class="result-label">约月数</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="totalYears">0</div>
+                        <div class="result-label">约年数</div>
+                    </div>
+                </div>
+                <div class="weekday-info" id="weekdayInfo1"></div>
+            </div>
+        </div>
+
+        <div id="add" class="tab-content">
+            <div class="calc-section">
+                <div class="section-title">🔢 从某日期推算新日期</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>起始日期</label>
+                        <input type="date" id="baseDate">
+                    </div>
+                    <div class="form-group">
+                        <label>操作</label>
+                        <select id="operation">
+                            <option value="add">加</option>
+                            <option value="sub">减</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" id="amount" value="1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>单位</label>
+                        <select id="unit">
+                            <option value="days">天</option>
+                            <option value="weeks">周</option>
+                            <option value="months">月</option>
+                            <option value="years">年</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="calcAdd()">计算</button>
+                </div>
+            </div>
+            <div id="addResult" class="result-box" style="display: none;">
+                <div class="result-title">📊 推算结果</div>
+                <div class="result-single">
+                    <div class="result-value" id="newDate"></div>
+                    <div class="result-label" id="newDateWeekday"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="workdays" class="tab-content">
+            <div class="calc-section">
+                <div class="section-title">💼 计算工作日数量</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>开始日期</label>
+                        <input type="date" id="startDate2">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期</label>
+                        <input type="date" id="endDate2">
+                    </div>
+                    <button class="btn btn-primary" onclick="calcWorkdays()">计算</button>
+                </div>
+            </div>
+            <div id="workdaysResult" class="result-box" style="display: none;">
+                <div class="result-title">📊 工作日统计</div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-value" id="workdayCount">0</div>
+                        <div class="result-label">工作日</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="weekendCount">0</div>
+                        <div class="result-label">周末</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="totalDays2">0</div>
+                        <div class="result-label">总天数</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+        function initToday() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('todayDate').textContent = today.toLocaleDateString('zh-CN', options);
+            document.getElementById('todayWeekday').textContent = weekdays[today.getDay()];
+
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('startDate1').value = todayStr;
+            document.getElementById('endDate1').value = todayStr;
+            document.getElementById('baseDate').value = todayStr;
+            document.getElementById('startDate2').value = todayStr;
+            document.getElementById('endDate2').value = todayStr;
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        function calcInterval() {
+            const start = new Date(document.getElementById('startDate1').value);
+            const end = new Date(document.getElementById('endDate1').value);
+
+            if (isNaN(start) || isNaN(end)) {
+                alert('请选择有效的日期');
+                return;
+            }
+
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffWeeks = (diffDays / 7).toFixed(1);
+            const diffMonths = (diffDays / 30.44).toFixed(1);
+            const diffYears = (diffDays / 365.25).toFixed(2);
+
+            document.getElementById('totalDays').textContent = diffDays;
+            document.getElementById('totalWeeks').textContent = diffWeeks;
+            document.getElementById('totalMonths').textContent = diffMonths;
+            document.getElementById('totalYears').textContent = diffYears;
+
+            const info = document.getElementById('weekdayInfo1');
+            const startDay = weekdays[start.getDay()];
+            const endDay = weekdays[end.getDay()];
+            const isStartWeekend = start.getDay() === 0 || start.getDay() === 6;
+            const isEndWeekend = end.getDay() === 0 || end.getDay() === 6;
+
+            info.innerHTML = `
+                <span class="weekday-tag ${isStartWeekend ? 'weekend' : ''}">开始: ${startDay}</span>
+                <span class="weekday-tag ${isEndWeekend ? 'weekend' : ''}">结束: ${endDay}</span>
+            `;
+
+            document.getElementById('intervalResult').style.display = 'block';
+        }
+
+        function calcAdd() {
+            const base = new Date(document.getElementById('baseDate').value);
+            const op = document.getElementById('operation').value;
+            const amount = parseInt(document.getElementById('amount').value) || 0;
+            const unit = document.getElementById('unit').value;
+
+            if (isNaN(base)) {
+                alert('请选择有效的日期');
+                return;
+            }
+
+            const result = new Date(base);
+            const multiplier = op === 'add' ? 1 : -1;
+
+            switch (unit) {
+                case 'days':
+                    result.setDate(result.getDate() + amount * multiplier);
+                    break;
+                case 'weeks':
+                    result.setDate(result.getDate() + amount * 7 * multiplier);
+                    break;
+                case 'months':
+                    result.setMonth(result.getMonth() + amount * multiplier);
+                    break;
+                case 'years':
+                    result.setFullYear(result.getFullYear() + amount * multiplier);
+                    break;
+            }
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('newDate').textContent = result.toLocaleDateString('zh-CN', options);
+            document.getElementById('newDateWeekday').textContent = weekdays[result.getDay()];
+
+            document.getElementById('addResult').style.display = 'block';
+        }
+
+        function calcWorkdays() {
+            const start = new Date(document.getElementById('startDate2').value);
+            const end = new Date(document.getElementById('endDate2').value);
+
+            if (isNaN(start) || isNaN(end)) {
+                alert('请选择有效的日期');
+                return;
+            }
+
+            let workdays = 0;
+            let weekends = 0;
+            const current = new Date(Math.min(start, end));
+            const endDate = new Date(Math.max(start, end));
+
+            while (current <= endDate) {
+                const day = current.getDay();
+                if (day === 0 || day === 6) {
+                    weekends++;
+                } else {
+                    workdays++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+
+            document.getElementById('workdayCount').textContent = workdays;
+            document.getElementById('weekendCount').textContent = weekends;
+            document.getElementById('totalDays2').textContent = workdays + weekends;
+
+            document.getElementById('workdaysResult').style.display = 'block';
+        }
+
+        initToday();
+    </script>
+</body>
+</html>

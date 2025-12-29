@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 URL 编码/解码工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 15px 30px;
+        }
+
+        .navbar-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-icon {
+            font-size: 20px;
+        }
+
+        .navbar-text {
+            font-weight: 600;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tool-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);
+        }
+
+        .info-box {
+            background: #fff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-title {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-content {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <a href="../../index.html" class="navbar-brand">
+                <span class="navbar-icon">🏠</span>
+                <span class="navbar-text">返回工具箱</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔗 URL 编码/解码工具</h1>
+            <p class="subtitle">快速进行 URL 编码和解码转换</p>
+        </div>
+
+        <div class="tool-section">
+            <div class="section-title">📥 输入文本</div>
+            <div class="input-group">
+                <label class="label">原始文本或编码文本</label>
+                <textarea class="textarea" id="inputText" placeholder="输入需要编码或解码的文本..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="encodeURL()">
+                    🔒 URL 编码
+                </button>
+                <button class="btn btn-primary" onclick="decodeURL()">
+                    🔓 URL 解码
+                </button>
+                <button class="btn btn-secondary" onclick="clearInput()">
+                    🗑️ 清空
+                </button>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <div class="section-title">📤 输出结果</div>
+            <div class="input-group">
+                <label class="label">转换结果</label>
+                <textarea class="textarea" id="outputText" placeholder="转换结果将显示在这里..." readonly></textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-success" onclick="copyResult()">
+                    📋 复制结果
+                </button>
+                <button class="btn btn-secondary" onclick="swapTexts()">
+                    🔄 交换输入输出
+                </button>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-title">💡 使用说明</div>
+            <div class="info-content">
+                <p><strong>URL 编码</strong>：将特殊字符转换为 % 加十六进制表示，用于在 URL 中安全传输数据</p>
+                <p style="margin-top: 8px;"><strong>URL 解码</strong>：将编码后的字符串还原为原始文本</p>
+                <p style="margin-top: 8px;"><strong>常见场景</strong>：处理 URL 参数、API 请求、表单提交等</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">操作成功！</div>
+
+    <script>
+        function encodeURL() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) {
+                showToast('请输入要编码的文本', 'error');
+                return;
+            }
+            try {
+                const encoded = encodeURIComponent(input);
+                document.getElementById('outputText').value = encoded;
+                showToast('编码成功！');
+            } catch (error) {
+                showToast('编码失败：' + error.message, 'error');
+            }
+        }
+
+        function decodeURL() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) {
+                showToast('请输入要解码的文本', 'error');
+                return;
+            }
+            try {
+                const decoded = decodeURIComponent(input);
+                document.getElementById('outputText').value = decoded;
+                showToast('解码成功！');
+            } catch (error) {
+                showToast('解码失败：请检查输入是否为有效的 URL 编码', 'error');
+            }
+        }
+
+        function clearInput() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+            showToast('已清空');
+        }
+
+        function copyResult() {
+            const output = document.getElementById('outputText');
+            if (!output.value.trim()) {
+                showToast('没有可复制的内容', 'error');
+                return;
+            }
+            output.select();
+            document.execCommand('copy');
+            showToast('已复制到剪贴板！');
+        }
+
+        function swapTexts() {
+            const input = document.getElementById('inputText');
+            const output = document.getElementById('outputText');
+            const temp = input.value;
+            input.value = output.value;
+            output.value = temp;
+            showToast('已交换输入输出');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? '#f44336' : '#333';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'e' || e.key === 'E') {
+                    e.preventDefault();
+                    encodeURL();
+                } else if (e.key === 'd' || e.key === 'D') {
+                    e.preventDefault();
+                    decodeURL();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
