@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Compatibility Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .component {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .component-name {
+            font-size: 1.4em;
+            color: #34495e;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .browser-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .browser-card {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .browser-card.chrome {
+            border-color: #4285f4;
+        }
+
+        .browser-card.firefox {
+            border-color: #ff7139;
+        }
+
+        .browser-card.edge {
+            border-color: #0078d7;
+        }
+
+        .browser-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .browser-name::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .chrome .browser-name::before {
+            background: #4285f4;
+        }
+
+        .firefox .browser-name::before {
+            background: #ff7139;
+        }
+
+        .edge .browser-name::before {
+            background: #0078d7;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .support-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .support-full {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .support-partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .support-none {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Browser Compatibility Reference</h1>
+            <p class="subtitle">Chrome, Firefox & Edge - Major Component Differences</p>
+        </header>
+
+        <div class="content">
+            <div class="category">
+                <h2 class="category-title">CSS & Styling</h2>
+
+                <div class="component">
+                    <div class="component-name">Scrollbar Styling</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>/* Webkit scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>/* Standard properties */
+scrollbar-width: thin;
+scrollbar-color: #888 #f1f1f1;</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>/* Webkit scrollbar (Chromium) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+/* Also supports ms-overflow-style */
+-ms-overflow-style: -ms-autohiding-scrollbar;</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">CSS Grid Gap</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>.grid {
+  display: grid;
+  gap: 20px;
+  grid-gap: 20px; /* legacy */
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>.grid {
+  display: grid;
+  gap: 20px; /* Preferred */
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>.grid {
+  display: grid;
+  gap: 20px;
+  -ms-grid-row-gap: 20px; /* Old Edge */
+  -ms-grid-column-gap: 20px;
+}</code></pre>
+                            <span class="support-badge support-full">Full Support (Chromium)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">JavaScript APIs</h2>
+
+                <div class="component">
+                    <div class="component-name">Clipboard API</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>// Modern Clipboard API
+navigator.clipboard.writeText('text')
+  .then(() => console.log('Copied'));
+
+navigator.clipboard.readText()
+  .then(text => console.log(text));</code></pre>
+                            <span class="support-badge support-full">v63+</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>// Requires user permission
+navigator.clipboard.writeText('text')
+  .then(() => console.log('Copied'));
+
+// readText requires explicit permission
+navigator.permissions.query({
+  name: "clipboard-read"
+});</code></pre>
+                            <span class="support-badge support-partial">v63+ (Permissions)</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>// Same as Chrome (Chromium)
+navigator.clipboard.writeText('text')
+  .then(() => console.log('Copied'));
+
+// Full support in Chromium Edge
+navigator.clipboard.readText();</code></pre>
+                            <span class="support-badge support-full">v79+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">Date & Time Formatting</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>const date = new Date();
+const formatted = new Intl.DateTimeFormat(
+  'en-US', 
+  { dateStyle: 'full' }
+).format(date);
+
+// Temporal API (experimental)
+// Temporal.Now.plainDateISO();</code></pre>
+                            <span class="support-badge support-full">Intl Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>const date = new Date();
+const formatted = new Intl.DateTimeFormat(
+  'en-US',
+  { dateStyle: 'full' }
+).format(date);
+
+// Good Intl support</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>const date = new Date();
+const formatted = new Intl.DateTimeFormat(
+  'en-US',
+  { dateStyle: 'full' }
+).format(date);
+
+// Same as Chrome</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">Web Notifications</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>if ('Notification' in window) {
+  Notification.requestPermission()
+    .then(permission => {
+      if (permission === 'granted') {
+        new Notification('Title', {
+          body: 'Message',
+          icon: '/icon.png'
+        });
+      }
+    });
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>if ('Notification' in window) {
+  Notification.requestPermission()
+    .then(permission => {
+      if (permission === 'granted') {
+        new Notification('Title', {
+          body: 'Message',
+          icon: '/icon.png'
+        });
+      }
+    });
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>// Modern Edge (Chromium)
+if ('Notification' in window) {
+  Notification.requestPermission()
+    .then(permission => {
+      // Same as Chrome
+    });
+}</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">Browser-Specific Features</h2>
+
+                <div class="component">
+                    <div class="component-name">File System Access</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>// File System Access API
+const handle = await window
+  .showOpenFilePicker();
+const file = await handle[0]
+  .getFile();
+const contents = await file.text();</code></pre>
+                            <span class="support-badge support-full">v86+</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>// Use traditional file input
+const input = document
+  .createElement('input');
+input.type = 'file';
+input.onchange = (e) => {
+  const file = e.target.files[0];
+  // Process file
+};</code></pre>
+                            <span class="support-badge support-none">Not Supported</span>
+                            <div class="note">Use traditional file input or File API</div>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>// Same as Chrome (Chromium)
+const handle = await window
+  .showOpenFilePicker();
+const file = await handle[0]
+  .getFile();</code></pre>
+                            <span class="support-badge support-full">v86+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">WebP Image Format</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>&lt;img src="image.webp" alt="Image"&gt;
+
+&lt;picture&gt;
+  &lt;source srcset="image.webp" 
+          type="image/webp"&gt;
+  &lt;img src="image.jpg" alt="Image"&gt;
+&lt;/picture&gt;</code></pre>
+                            <span class="support-badge support-full">Native Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>&lt;img src="image.webp" alt="Image"&gt;
+
+&lt;picture&gt;
+  &lt;source srcset="image.webp" 
+          type="image/webp"&gt;
+  &lt;img src="image.jpg" alt="Image"&gt;
+&lt;/picture&gt;</code></pre>
+                            <span class="support-badge support-full">v65+</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>&lt;img src="image.webp" alt="Image"&gt;
+
+&lt;picture&gt;
+  &lt;source srcset="image.webp" 
+          type="image/webp"&gt;
+  &lt;img src="image.jpg" alt="Image"&gt;
+&lt;/picture&gt;</code></pre>
+                            <span class="support-badge support-full">v18+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">CSS Container Queries</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>.container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+}</code></pre>
+                            <span class="support-badge support-full">v105+</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>.container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+}</code></pre>
+                            <span class="support-badge support-full">v110+</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>.container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+}</code></pre>
+                            <span class="support-badge support-full">v105+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">Media & Audio</h2>
+
+                <div class="component">
+                    <div class="component-name">Web Audio API</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>const AudioContext = 
+  window.AudioContext;
+const audioCtx = new AudioContext();
+
+const oscillator = 
+  audioCtx.createOscillator();
+oscillator.connect(
+  audioCtx.destination
+);
+oscillator.start();</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>const AudioContext = 
+  window.AudioContext;
+const audioCtx = new AudioContext();
+
+const oscillator = 
+  audioCtx.createOscillator();
+oscillator.connect(
+  audioCtx.destination
+);
+oscillator.start();</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>const AudioContext = 
+  window.AudioContext;
+const audioCtx = new AudioContext();
+
+const oscillator = 
+  audioCtx.createOscillator();
+oscillator.connect(
+  audioCtx.destination
+);
+oscillator.start();</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">getUserMedia (Camera/Mic)</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+})
+.then(stream => {
+  video.srcObject = stream;
+})
+.catch(err => console.error(err));</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+})
+.then(stream => {
+  video.srcObject = stream;
+})
+.catch(err => console.error(err));</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+})
+.then(stream => {
+  video.srcObject = stream;
+})
+.catch(err => console.error(err));</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">Storage & Persistence</h2>
+
+                <div class="component">
+                    <div class="component-name">IndexedDB</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>const request = indexedDB
+  .open('MyDatabase', 1);
+
+request.onsuccess = (e) => {
+  const db = e.target.result;
+  // Use database
+};
+
+request.onupgradeneeded = (e) => {
+  const db = e.target.result;
+  db.createObjectStore('store');
+};</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>const request = indexedDB
+  .open('MyDatabase', 1);
+
+request.onsuccess = (e) => {
+  const db = e.target.result;
+  // Use database
+};
+
+request.onupgradeneeded = (e) => {
+  const db = e.target.result;
+  db.createObjectStore('store');
+};</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>const request = indexedDB
+  .open('MyDatabase', 1);
+
+request.onsuccess = (e) => {
+  const db = e.target.result;
+  // Use database
+};
+
+request.onupgradeneeded = (e) => {
+  const db = e.target.result;
+  db.createObjectStore('store');
+};</code></pre>
+                            <span class="support-badge support-full">Full Support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component">
+                    <div class="component-name">localStorage Limits</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>// ~10MB limit
+localStorage.setItem('key', 'value');
+const value = localStorage
+  .getItem('key');
+
+// Check quota
+navigator.storage.estimate()
+  .then(({usage, quota}) => {
+    console.log(usage, quota);
+  });</code></pre>
+                            <span class="support-badge support-full">~10MB</span>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>// ~10MB limit
+localStorage.setItem('key', 'value');
+const value = localStorage
+  .getItem('key');
+
+// Storage estimation
+navigator.storage.estimate()
+  .then(({usage, quota}) => {
+    console.log(usage, quota);
+  });</code></pre>
+                            <span class="support-badge support-full">~10MB</span>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>// ~10MB limit
+localStorage.setItem('key', 'value');
+const value = localStorage
+  .getItem('key');
+
+// Same as Chrome
+navigator.storage.estimate()
+  .then(({usage, quota}) => {
+    console.log(usage, quota);
+  });</code></pre>
+                            <span class="support-badge support-full">~10MB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">Detection & Feature Support</h2>
+
+                <div class="component">
+                    <div class="component-name">Browser Detection</div>
+                    <div class="browser-grid">
+                        <div class="browser-card chrome">
+                            <div class="browser-name">Chrome</div>
+                            <pre><code>// User agent detection
+const isChrome = /Chrome/.test(
+  navigator.userAgent
+) && /Google Inc/.test(
+  navigator.vendor
+);
+
+// Feature detection (better)
+if ('serviceWorker' in navigator) {
+  // Chrome supports service workers
+}</code></pre>
+                        </div>
+                        <div class="browser-card firefox">
+                            <div class="browser-name">Firefox</div>
+                            <pre><code>// User agent detection
+const isFirefox = /Firefox/.test(
+  navigator.userAgent
+);
+
+// Feature detection (better)
+if ('serviceWorker' in navigator) {
+  // Firefox supports service workers
+}</code></pre>
+                        </div>
+                        <div class="browser-card edge">
+                            <div class="browser-name">Edge</div>
+                            <pre><code>// User agent detection
+const isEdge = /Edg/.test(
+  navigator.userAgent
+);
+
+// Feature detection (better)
+if ('serviceWorker' in navigator) {
+  // Edge supports service workers
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="note">
+                        <strong>Best Practice:</strong> Always prefer feature detection over user agent sniffing. Use libraries like Modernizr for comprehensive feature detection.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Browser Compatibility Reference loaded');
+        console.log('User Agent:', navigator.userAgent);
+        
+        const browserInfo = {
+            chrome: /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor),
+            firefox: /Firefox/.test(navigator.userAgent),
+            edge: /Edg/.test(navigator.userAgent)
+        };
+        
+        console.log('Detected Browser:', browserInfo);
+    </script>
+</body>
+</html>

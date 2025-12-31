@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String   @map("password_hash")
+  firstName     String   @map("first_name")
+  lastName      String   @map("last_name")
+  phone         String?
+  emailVerified Boolean  @default(false) @map("email_verified")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  orders       Order[]
+  priceAlerts  PriceAlert[]
+  flightSearches FlightSearch[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Airport {
+  iataCode  String  @id @map("iata_code")
+  icaoCode  String? @map("icao_code")
+  name      String
+  city      String
+  country   String
+  latitude  Decimal @db.Decimal(10, 6)
+  longitude Decimal @db.Decimal(10, 6)
+  timezone  String
+  metadata  Json?
+
+  @@index([city])
+  @@index([country])
+  @@map("airports")
+}
+
+model Airline {
+  iataCode String  @id @map("iata_code")
+  icaoCode String? @map("icao_code")
+  name     String
+  country  String
+  logoUrl  String? @map("logo_url")
+  alliance String?
+
+  @@map("airlines")
+}
+
+model FlightRoute {
+  id               String   @id @default(uuid())
+  originIata       String   @map("origin_iata")
+  destinationIata  String   @map("destination_iata")
+  airlineIata      String   @map("airline_iata")
+  flightNumber     String   @map("flight_number")
+  departureTime    String   @map("departure_time")
+  arrivalTime      String   @map("arrival_time")
+  durationMinutes  Int      @map("duration_minutes")
+  frequency        String
+  aircraftType     String?  @map("aircraft_type")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([originIata, destinationIata])
+  @@map("flight_routes")
+}
+
+model FlightSearch {
+  id              String   @id @default(uuid())
+  userId          String?  @map("user_id")
+  originIata      String   @map("origin_iata")
+  destinationIata String   @map("destination_iata")
+  departureDate   DateTime @map("departure_date") @db.Date
+  returnDate      DateTime? @map("return_date") @db.Date
+  passengers      Int
+  cabinClass      String   @map("cabin_class")
+  searchTimestamp DateTime @default(now()) @map("search_timestamp")
+  resultsCount    Int?     @map("results_count")
+  sessionId       String?  @map("session_id")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([originIata])
+  @@index([destinationIata])
+  @@index([searchTimestamp])
+  @@map("flight_searches")
+}
+
+model FlightPrice {
+  id              String   @id @default(uuid())
+  routeKey        String   @map("route_key")
+  originIata      String   @map("origin_iata")
+  destinationIata String   @map("destination_iata")
+  departureDate   DateTime @map("departure_date") @db.Date
+  airlineIata     String   @map("airline_iata")
+  flightNumber    String   @map("flight_number")
+  price           Decimal  @db.Decimal(10, 2)
+  currency        String
+  cabinClass      String   @map("cabin_class")
+  availableSeats  Int?     @map("available_seats")
+  recordedAt      DateTime @default(now()) @map("recorded_at")
+
+  @@index([routeKey])
+  @@index([departureDate])
+  @@index([recordedAt])
+  @@map("flight_prices")
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  orderNumber   String   @unique @map("order_number")
+  status        String
+  totalPrice    Decimal  @map("total_price") @db.Decimal(10, 2)
+  currency      String
+  paymentMethod String?  @map("payment_method")
+  paymentStatus String   @map("payment_status")
+  flightData    Json     @map("flight_data")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user       User              @relation(fields: [userId], references: [id])
+  passengers OrderPassenger[]
+
+  @@index([userId])
+  @@index([orderNumber])
+  @@map("orders")
+}
+
+model OrderPassenger {
+  id             String   @id @default(uuid())
+  orderId        String   @map("order_id")
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  dateOfBirth    DateTime @map("date_of_birth") @db.Date
+  passportNumber String?  @map("passport_number")
+  nationality    String
+  passengerType  String   @map("passenger_type")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_passengers")
+}
+
+model PriceAlert {
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
+  originIata    String    @map("origin_iata")
+  destinationIata String  @map("destination_iata")
+  departureDate DateTime  @map("departure_date") @db.Date
+  returnDate    DateTime? @map("return_date") @db.Date
+  targetPrice   Decimal   @map("target_price") @db.Decimal(10, 2)
+  currency      String
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([active])
+  @@map("price_alerts")
+}
