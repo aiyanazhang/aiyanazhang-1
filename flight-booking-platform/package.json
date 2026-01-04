@@ -1,0 +1,39 @@
+{
+  "name": "flight-booking-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Microservices-based flight route query and booking system",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:flight-data\" \"npm run dev:search\"",
+    "dev:gateway": "npm run dev --workspace=apps/api-gateway",
+    "dev:flight-data": "npm run dev --workspace=services/flight-data-service",
+    "dev:search": "npm run dev --workspace=services/search-service",
+    "dev:web": "npm run dev --workspace=apps/web-client",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "prisma:migrate": "npm run prisma:migrate --workspace=packages/database-schemas",
+    "prisma:studio": "npm run prisma:studio --workspace=packages/database-schemas"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
