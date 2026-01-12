@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Method Definition Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #333; }
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #2196F3;
+            margin-top: 0;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        pre {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .output {
+            background: #e8f5e9;
+            padding: 10px;
+            border-left: 4px solid #4caf50;
+            margin-top: 10px;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1976D2; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Method Definition Demo</h1>
+
+    <!-- 1. Function Declaration -->
+    <div class="section">
+        <h2>1. Function Declaration</h2>
+        <pre>
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+        </pre>
+        <button onclick="demo1()">Run</button>
+        <div class="output" id="output1"></div>
+    </div>
+
+    <!-- 2. Function Expression -->
+    <div class="section">
+        <h2>2. Function Expression</h2>
+        <pre>
+const add = function(a, b) {
+    return a + b;
+};
+        </pre>
+        <button onclick="demo2()">Run</button>
+        <div class="output" id="output2"></div>
+    </div>
+
+    <!-- 3. Arrow Function -->
+    <div class="section">
+        <h2>3. Arrow Function</h2>
+        <pre>
+const multiply = (a, b) => a * b;
+
+const square = x => x * x;
+
+const sayHi = () => "Hi!";
+        </pre>
+        <button onclick="demo3()">Run</button>
+        <div class="output" id="output3"></div>
+    </div>
+
+    <!-- 4. Object Method -->
+    <div class="section">
+        <h2>4. Object Method (Shorthand)</h2>
+        <pre>
+const calculator = {
+    value: 0,
+    add(n) {
+        this.value += n;
+        return this;
+    },
+    subtract(n) {
+        this.value -= n;
+        return this;
+    }
+};
+        </pre>
+        <button onclick="demo4()">Run</button>
+        <div class="output" id="output4"></div>
+    </div>
+
+    <!-- 5. Constructor Function -->
+    <div class="section">
+        <h2>5. Constructor Function</h2>
+        <pre>
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+    this.introduce = function() {
+        return `I'm ${this.name}, ${this.age} years old.`;
+    };
+}
+        </pre>
+        <button onclick="demo5()">Run</button>
+        <div class="output" id="output5"></div>
+    </div>
+
+    <!-- 6. Class Method -->
+    <div class="section">
+        <h2>6. Class Method (ES6)</h2>
+        <pre>
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    speak() {
+        return `${this.name} makes a sound.`;
+    }
+    static info() {
+        return "Animals are living beings.";
+    }
+}
+        </pre>
+        <button onclick="demo6()">Run</button>
+        <div class="output" id="output6"></div>
+    </div>
+
+    <!-- 7. IIFE -->
+    <div class="section">
+        <h2>7. IIFE (Immediately Invoked Function Expression)</h2>
+        <pre>
+const result = (function(x) {
+    return x * 2;
+})(5);
+        </pre>
+        <button onclick="demo7()">Run</button>
+        <div class="output" id="output7"></div>
+    </div>
+
+    <!-- 8. Generator Function -->
+    <div class="section">
+        <h2>8. Generator Function</h2>
+        <pre>
+function* numberGenerator() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+        </pre>
+        <button onclick="demo8()">Run</button>
+        <div class="output" id="output8"></div>
+    </div>
+
+    <!-- 9. Async Function -->
+    <div class="section">
+        <h2>9. Async Function</h2>
+        <pre>
+async function fetchData() {
+    return new Promise(resolve => {
+        setTimeout(() => resolve("Data loaded!"), 1000);
+    });
+}
+        </pre>
+        <button onclick="demo9()">Run</button>
+        <div class="output" id="output9"></div>
+    </div>
+
+    <script>
+        // 1. Function Declaration
+        function greet(name) {
+            return "Hello, " + name + "!";
+        }
+        function demo1() {
+            document.getElementById('output1').textContent = greet("World");
+        }
+
+        // 2. Function Expression
+        const add = function(a, b) {
+            return a + b;
+        };
+        function demo2() {
+            document.getElementById('output2').textContent = "add(3, 5) = " + add(3, 5);
+        }
+
+        // 3. Arrow Function
+        const multiply = (a, b) => a * b;
+        const square = x => x * x;
+        const sayHi = () => "Hi!";
+        function demo3() {
+            document.getElementById('output3').textContent = 
+                `multiply(4, 5) = ${multiply(4, 5)}, square(6) = ${square(6)}, sayHi() = ${sayHi()}`;
+        }
+
+        // 4. Object Method
+        const calculator = {
+            value: 0,
+            add(n) {
+                this.value += n;
+                return this;
+            },
+            subtract(n) {
+                this.value -= n;
+                return this;
+            }
+        };
+        function demo4() {
+            calculator.value = 0;
+            calculator.add(10).add(5).subtract(3);
+            document.getElementById('output4').textContent = 
+                "calculator.add(10).add(5).subtract(3).value = " + calculator.value;
+        }
+
+        // 5. Constructor Function
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+            this.introduce = function() {
+                return `I'm ${this.name}, ${this.age} years old.`;
+            };
+        }
+        function demo5() {
+            const person = new Person("Alice", 25);
+            document.getElementById('output5').textContent = person.introduce();
+        }
+
+        // 6. Class Method
+        class Animal {
+            constructor(name) {
+                this.name = name;
+            }
+            speak() {
+                return `${this.name} makes a sound.`;
+            }
+            static info() {
+                return "Animals are living beings.";
+            }
+        }
+        function demo6() {
+            const dog = new Animal("Dog");
+            document.getElementById('output6').textContent = 
+                `Instance: ${dog.speak()} | Static: ${Animal.info()}`;
+        }
+
+        // 7. IIFE
+        function demo7() {
+            const result = (function(x) {
+                return x * 2;
+            })(5);
+            document.getElementById('output7').textContent = "IIFE result: " + result;
+        }
+
+        // 8. Generator Function
+        function* numberGenerator() {
+            yield 1;
+            yield 2;
+            yield 3;
+        }
+        function demo8() {
+            const gen = numberGenerator();
+            const values = [];
+            for (const val of gen) {
+                values.push(val);
+            }
+            document.getElementById('output8').textContent = "Generated values: " + values.join(", ");
+        }
+
+        // 9. Async Function
+        async function fetchData() {
+            return new Promise(resolve => {
+                setTimeout(() => resolve("Data loaded!"), 1000);
+            });
+        }
+        function demo9() {
+            document.getElementById('output9').textContent = "Loading...";
+            fetchData().then(data => {
+                document.getElementById('output9').textContent = data;
+            });
+        }
+    </script>
+</body>
+</html>

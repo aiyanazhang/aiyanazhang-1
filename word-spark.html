@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Spark - Creative Combinations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #e94560, #f5a623, #7b68ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(233, 69, 96, 0.2);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .combination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .word {
+            font-size: 1.8rem;
+            font-weight: 300;
+            padding: 10px 25px;
+            border-radius: 50px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .word:nth-child(1) { color: #e94560; }
+        .word:nth-child(2) { color: #f5a623; }
+        .word:nth-child(3) { color: #7b68ee; }
+
+        .plus {
+            color: #444;
+            font-size: 1.5rem;
+        }
+
+        .category-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #e94560, #f5a623);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .generate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 15px 25px;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .icon-btn.saved {
+            background: rgba(233, 69, 96, 0.3);
+            color: #e94560;
+        }
+
+        .category-select {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: #888;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cat-btn:hover, .cat-btn.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .favorites-section {
+            margin-top: 60px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            color: #666;
+            text-align: center;
+        }
+
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .fav-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .fav-words {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+
+        .fav-words span:nth-child(1) { color: #e94560; }
+        .fav-words span:nth-child(2) { color: #f5a623; }
+        .fav-words span:nth-child(3) { color: #7b68ee; }
+
+        .fav-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .fav-btn {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            border-radius: 20px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .fav-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .fav-btn.delete:hover {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #555;
+            padding: 40px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .word { font-size: 1.3rem; padding: 8px 18px; }
+            .card { padding: 30px 20px; }
+            button { padding: 12px 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WORD SPARK</h1>
+            <p class="subtitle">Unexpected pairings for creative minds</p>
+        </header>
+
+        <div class="category-select">
+            <button class="cat-btn active" data-count="3">3 Words</button>
+            <button class="cat-btn" data-count="2">2 Words</button>
+            <button class="cat-btn" data-count="4">4 Words</button>
+        </div>
+
+        <div class="card" id="mainCard">
+            <div class="combination" id="combination"></div>
+            <div class="category-tags" id="categoryTags"></div>
+            <div class="actions">
+                <button class="icon-btn" id="saveBtn" title="Save">&#9825; Save</button>
+                <button class="generate-btn" id="generateBtn">Generate</button>
+                <button class="icon-btn" id="shareBtn" title="Share">&#8599; Share</button>
+            </div>
+        </div>
+
+        <div class="favorites-section">
+            <h2 class="section-title">SAVED SPARKS</h2>
+            <div class="favorites-grid" id="favoritesGrid"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const wordBank = {
+            nature: ['Ocean', 'Forest', 'Mountain', 'River', 'Desert', 'Storm', 'Sunset', 'Dawn', 'Moonlight', 'Wilderness', 'Meadow', 'Canyon', 'Coral', 'Aurora', 'Tide'],
+            technology: ['Digital', 'Algorithm', 'Neural', 'Quantum', 'Cyber', 'Virtual', 'Binary', 'Hologram', 'Synthetic', 'Automated', 'Encrypted', 'Wireless', 'Robotic', 'Bionic'],
+            emotion: ['Whisper', 'Echo', 'Silence', 'Wonder', 'Nostalgia', 'Serenity', 'Euphoria', 'Melancholy', 'Solitude', 'Bliss', 'Yearning', 'Tranquil', 'Fierce', 'Gentle'],
+            aesthetic: ['Vintage', 'Minimalist', 'Gothic', 'Rustic', 'Ethereal', 'Bohemian', 'Industrial', 'Organic', 'Abstract', 'Geometric', 'Fluid', 'Brutalist', 'Baroque', 'Zen'],
+            concept: ['Growth', 'Decay', 'Rebirth', 'Paradox', 'Harmony', 'Chaos', 'Balance', 'Infinity', 'Origin', 'Threshold', 'Metamorphosis', 'Duality', 'Emergence', 'Fusion'],
+            place: ['Urban', 'Coastal', 'Underground', 'Celestial', 'Ancient', 'Hidden', 'Floating', 'Abandoned', 'Sacred', 'Liminal', 'Subterranean', 'Aerial', 'Nomadic', 'Peripheral'],
+            action: ['Drift', 'Bloom', 'Shatter', 'Weave', 'Dissolve', 'Ignite', 'Emerge', 'Cascade', 'Converge', 'Transcend', 'Unravel', 'Crystallize', 'Resonate', 'Evolve'],
+            texture: ['Velvet', 'Glass', 'Stone', 'Silk', 'Iron', 'Paper', 'Moss', 'Chrome', 'Porcelain', 'Leather', 'Marble', 'Amber', 'Frost', 'Smoke']
+        };
+
+        const categories = Object.keys(wordBank);
+        let currentCombination = [];
+        let currentCategories = [];
+        let wordCount = 3;
+        let favorites = JSON.parse(localStorage.getItem('wordSparkFavorites')) || [];
+
+        function getRandomWord(category) {
+            const words = wordBank[category];
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function getRandomCategory() {
+            return categories[Math.floor(Math.random() * categories.length)];
+        }
+
+        function generateCombination() {
+            currentCombination = [];
+            currentCategories = [];
+            const usedCategories = new Set();
+
+            for (let i = 0; i < wordCount; i++) {
+                let category;
+                do {
+                    category = getRandomCategory();
+                } while (usedCategories.has(category) && usedCategories.size < categories.length);
+                
+                usedCategories.add(category);
+                currentCategories.push(category);
+                currentCombination.push(getRandomWord(category));
+            }
+
+            renderCombination();
+            updateSaveButton();
+        }
+
+        function renderCombination() {
+            const container = document.getElementById('combination');
+            const tagsContainer = document.getElementById('categoryTags');
+
+            container.innerHTML = currentCombination.map((word, i) => 
+                `<span class="word">${word}</span>${i < currentCombination.length - 1 ? '<span class="plus">+</span>' : ''}`
+            ).join('');
+
+            tagsContainer.innerHTML = currentCategories.map(cat => 
+                `<span class="tag">${cat}</span>`
+            ).join('');
+        }
+
+        function saveCombination() {
+            const key = currentCombination.join(' + ');
+            const exists = favorites.some(f => f.words.join(' + ') === key);
+            
+            if (!exists) {
+                favorites.unshift({
+                    words: [...currentCombination],
+                    categories: [...currentCategories],
+                    timestamp: Date.now()
+                });
+                localStorage.setItem('wordSparkFavorites', JSON.stringify(favorites));
+                renderFavorites();
+                showToast('Saved to your collection');
+            } else {
+                showToast('Already in your collection');
+            }
+            updateSaveButton();
+        }
+
+        function updateSaveButton() {
+            const btn = document.getElementById('saveBtn');
+            const key = currentCombination.join(' + ');
+            const exists = favorites.some(f => f.words.join(' + ') === key);
+            
+            if (exists) {
+                btn.innerHTML = '&#9829; Saved';
+                btn.classList.add('saved');
+            } else {
+                btn.innerHTML = '&#9825; Save';
+                btn.classList.remove('saved');
+            }
+        }
+
+        function deleteFavorite(index) {
+            favorites.splice(index, 1);
+            localStorage.setItem('wordSparkFavorites', JSON.stringify(favorites));
+            renderFavorites();
+            updateSaveButton();
+            showToast('Removed from collection');
+        }
+
+        function shareCombination(words) {
+            const text = words ? words.join(' + ') : currentCombination.join(' + ');
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Word Spark',
+                    text: `Creative spark: ${text}`
+                });
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+                showToast('Copied to clipboard');
+            }
+        }
+
+        function renderFavorites() {
+            const grid = document.getElementById('favoritesGrid');
+            
+            if (favorites.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No saved sparks yet. Generate and save combinations that inspire you.</div>';
+                return;
+            }
+
+            grid.innerHTML = favorites.map((fav, i) => `
+                <div class="fav-card">
+                    <div class="fav-words">
+                        ${fav.words.map(w => `<span>${w}</span>`).join(' + ')}
+                    </div>
+                    <div class="fav-actions">
+                        <button class="fav-btn" onclick="shareCombination(${JSON.stringify(fav.words).replace(/"/g, '&quot;')})">Share</button>
+                        <button class="fav-btn delete" onclick="deleteFavorite(${i})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Event Listeners
+        document.getElementById('generateBtn').addEventListener('click', generateCombination);
+        document.getElementById('saveBtn').addEventListener('click', saveCombination);
+        document.getElementById('shareBtn').addEventListener('click', () => shareCombination());
+
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                wordCount = parseInt(btn.dataset.count);
+                generateCombination();
+            });
+        });
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                generateCombination();
+            }
+        });
+
+        // Initialize
+        generateCombination();
+        renderFavorites();
+    </script>
+</body>
+</html>
