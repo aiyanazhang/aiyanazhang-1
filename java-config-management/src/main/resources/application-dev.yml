@@ -1,0 +1,90 @@
+# 开发环境配置
+# 开发环境特定的配置覆盖
+
+# 服务器配置
+server:
+  port: 8080
+
+# Spring配置  
+spring:
+  # 数据库配置 - 开发环境使用H2内存数据库
+  datasource:
+    url: jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    
+  # JPA配置 - 开发环境允许DDL自动创建
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        
+  # H2控制台 - 开发环境启用
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+        
+  # 开发工具配置
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# 日志配置 - 开发环境详细日志
+logging:
+  level:
+    root: DEBUG
+    com.company: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+
+# 安全配置 - 开发环境宽松设置
+security:
+  jwt:
+    secret: dev-secret-key-not-for-production-use-only
+    expiration: 86400
+  cors:
+    allowed-origins: "http://localhost:3000,http://localhost:8080"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    allow-credentials: true
+  rate-limit:
+    requests-per-minute: 1000  # 开发环境放宽限制
+
+# 管理端点 - 开发环境开放所有端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+
+# 自定义配置 - 开发环境设置
+app:
+  config:
+    cache:
+      ttl: 60  # 开发环境短缓存时间便于调试
+      max-size: 100
+    monitoring:
+      enabled: true
+      interval: 10  # 开发环境更频繁的监控
+    audit:
+      enabled: true
+      retention-days: 7  # 开发环境短保留期
+    hotreload:
+      enabled: true  # 开发环境启用热更新
+      check-interval: 5  # 开发环境更频繁的检查

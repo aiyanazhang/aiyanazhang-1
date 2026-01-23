@@ -1,0 +1,69 @@
+# 测试环境配置 - 用于单元测试和集成测试
+spring:
+  application:
+    name: java-config-management-test
+    
+  # 测试数据库配置
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+    
+  # JPA测试配置
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        
+  # H2控制台（测试时禁用）
+  h2:
+    console:
+      enabled: false
+
+# 日志配置 - 测试时使用较简单的配置
+logging:
+  level:
+    root: WARN
+    com.company: DEBUG
+    org.springframework: WARN
+
+# 测试专用的应用配置
+app:
+  config:
+    cache:
+      enabled: true
+      ttl: 60  # 测试时使用较短的TTL
+      max-size: 50
+    monitoring:
+      enabled: true
+      interval: 10  # 测试时使用较短的间隔
+    audit:
+      enabled: true
+      retention-days: 1  # 测试时使用很短的保留期
+      file-path: target/test-logs/config-audit.log
+    hotreload:
+      enabled: false  # 测试时禁用热更新
+      
+# 安全配置 - 测试专用
+security:
+  jwt:
+    secret: test-secret-key-only-for-testing-purposes
+    expiration: 3600
+  cors:
+    allowed-origins: "http://localhost:8080"
+  rate-limit:
+    requests-per-minute: 1000  # 测试时放宽限制
+
+# 管理端点 - 测试时开放更多端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

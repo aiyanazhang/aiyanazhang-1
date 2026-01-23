@@ -1,0 +1,99 @@
+# 测试环境配置
+# 测试环境特定的配置覆盖
+
+# 服务器配置
+server:
+  port: 8081
+
+# Spring配置
+spring:
+  # 数据库配置 - 测试环境使用独立的H2数据库
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: test_user
+    password: test_password
+    
+  # JPA配置 - 测试环境使用create-drop策略
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false  # 测试环境不显示SQL，减少日志噪音
+    properties:
+      hibernate:
+        format_sql: false
+        
+  # H2控制台 - 测试环境禁用
+  h2:
+    console:
+      enabled: false
+      
+  # 测试配置
+  test:
+    database:
+      replace: none  # 不替换数据源配置
+
+# 日志配置 - 测试环境适中的日志级别
+logging:
+  level:
+    root: INFO
+    com.company: DEBUG
+    org.springframework: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/test-application.log
+
+# 安全配置 - 测试环境使用测试密钥
+security:
+  jwt:
+    secret: test-secret-key-for-testing-only-not-secure
+    expiration: 3600  # 测试环境短过期时间
+  cors:
+    allowed-origins: "http://localhost:3000,http://localhost:8081"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    allow-credentials: true
+  rate-limit:
+    requests-per-minute: 500  # 测试环境中等限制
+
+# 管理端点 - 测试环境开放测试相关端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,configprops,beans
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    export:
+      simple:
+        enabled: true
+
+# 自定义配置 - 测试环境设置
+app:
+  config:
+    cache:
+      ttl: 120  # 测试环境中等缓存时间
+      max-size: 500
+    monitoring:
+      enabled: true
+      interval: 30  # 测试环境适中的监控频率
+    audit:
+      enabled: true
+      retention-days: 14  # 测试环境中等保留期
+    hotreload:
+      enabled: false  # 测试环境关闭热更新，保证测试稳定性
+      check-interval: 30
+
+# 测试特定配置
+test:
+  data:
+    cleanup: true  # 测试后清理数据
+  mock:
+    external-services: true  # 模拟外部服务
+  coverage:
+    enabled: true  # 启用覆盖率收集
+  performance:
+    monitoring: true  # 启用性能监控

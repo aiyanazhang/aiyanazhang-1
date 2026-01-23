@@ -1,0 +1,39 @@
+# 外部配置文件示例
+# 用于覆盖应用程序内部配置，具有最高优先级
+
+# 服务器配置覆盖
+server:
+  port: 9090  # 覆盖默认端口
+
+# 数据库配置覆盖
+spring:
+  datasource:
+    url: jdbc:mysql://external-db:3306/appdb
+    username: external_user
+    password: external_password
+
+# 安全配置覆盖
+security:
+  jwt:
+    secret: external-jwt-secret-key
+    expiration: 7200  # 2小时
+  rate-limit:
+    requests-per-minute: 200
+
+# 日志配置覆盖
+logging:
+  level:
+    com.company: INFO
+  file:
+    name: /external/logs/application.log
+
+# 自定义配置覆盖
+app:
+  config:
+    cache:
+      ttl: 900  # 15分钟缓存
+    monitoring:
+      interval: 120  # 2分钟监控间隔
+    hotreload:
+      enabled: true
+      check-interval: 60
