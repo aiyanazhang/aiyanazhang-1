@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="贪吃蛇游戏 - 经典回归，重温童年记忆">
+    <title>贪吃蛇 - 经典回归</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🐍 贪吃蛇</h1>
+                <nav class="nav">
+                    <a href="#home" class="nav-link">首页</a>
+                    <a href="#features" class="nav-link">特性</a>
+                    <a href="#about" class="nav-link">关于</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <h2 class="hero-title fade-in">贪吃蛇 - 经典回归</h2>
+                <p class="hero-subtitle fade-in delay-1">重温童年记忆，挑战极限分数</p>
+                <button class="cta-button fade-in delay-2">立即开始游戏</button>
+            </div>
+        </section>
+
+        <section id="demo" class="demo-section">
+            <div class="container">
+                <h3 class="section-title">游戏演示</h3>
+                <div class="demo-container">
+                    <div class="canvas-wrapper">
+                        <canvas id="gameCanvas" width="600" height="600"></canvas>
+                        <div class="score-display">
+                            <span class="score-label">分数：</span>
+                            <span id="score" class="score-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <h3 class="section-title">游戏特性</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎮</div>
+                        <h4 class="feature-title">经典玩法</h4>
+                        <p class="feature-description">原汁原味的游戏体验</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✨</div>
+                        <h4 class="feature-title">流畅动画</h4>
+                        <p class="feature-description">60fps高性能渲染</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h4 class="feature-title">响应式设计</h4>
+                        <p class="feature-description">支持所有设备，随时随地畅玩</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h4 class="feature-title">简洁界面</h4>
+                        <p class="feature-description">极简设计，专注游戏本身</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h3 class="cta-title">准备好挑战了吗？</h3>
+                <p class="cta-subtitle">加入数千玩家，开启你的贪吃蛇之旅</p>
+                <button class="cta-button pulse">立即开始</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">© 2024 贪吃蛇游戏 - 保留所有权利</p>
+        </div>
+    </footer>
+
+    <script src="js/snake-demo.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
