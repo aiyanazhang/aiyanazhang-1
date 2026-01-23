@@ -1,0 +1,23 @@
+{
+  "default_language": "zh",
+  "default_format": "text",
+  "enable_colors": true,
+  "log_level": "INFO",
+  "verbose": false,
+  "output": {
+    "show_timestamp": true,
+    "show_metadata": true,
+    "line_separator": "\n"
+  },
+  "greeting": {
+    "max_name_length": 50,
+    "sanitize_input": true,
+    "add_emoji": true,
+    "decoration_style": "box"
+  },
+  "system": {
+    "encoding": "utf-8",
+    "timeout": 30,
+    "buffer_size": 1024
+  }
+}
